@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Denis Rogov — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080B14;--card:#111827;--card-top:#161F33;--accent:#4A90D9;--accent-dim:rgba(74,144,217,.10);--accent-border:rgba(74,144,217,.20);--accent-glow:rgba(74,144,217,.25);--white:#FFF;--gray:#8A9BB5;--gray-light:#B0BDD0;--border:rgba(255,255,255,.07);--green:#4ADE80;--red:#F87171;--orange:#f7931a;--gold:#C8A97E;--font:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--tr:.3s cubic-bezier(.4,0,.2,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--white);font-family:var(--font);height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased}
+#ptc{position:fixed;inset:0;z-index:0;pointer-events:none}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(100px)}
+.o1{width:600px;height:600px;top:-20%;left:-12%;background:rgba(74,144,217,.07);animation:of 22s ease-in-out infinite}
+.o2{width:400px;height:400px;bottom:-15%;right:-8%;background:rgba(74,222,128,.04);animation:of 28s ease-in-out infinite reverse}
+.o3{width:300px;height:300px;top:50%;left:55%;background:rgba(74,144,217,.04);animation:of 18s ease-in-out infinite 4s}
+@keyframes of{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(25px,-20px) scale(1.06)}66%{transform:translate(-15px,25px) scale(.94)}}
+.dash{position:relative;z-index:1;display:grid;grid-template-rows:auto 1fr auto;height:100vh;padding:10px 24px 5px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:6px}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-name{font-weight:700;font-size:.85rem;letter-spacing:2px;text-transform:uppercase}
+.logo-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent-glow)}
+.logo-sub{font-size:8px;color:var(--gray);letter-spacing:1.5px;text-transform:uppercase;font-weight:500}
+.hero-inline{display:flex;align-items:baseline;gap:14px}
+.hero-city{font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--accent)}
+.hero-time{font-family:var(--mono);font-size:48px;font-weight:300;letter-spacing:-1px;line-height:1;text-shadow:0 0 40px rgba(74,144,217,.1);font-variant-numeric:tabular-nums}
+.hero-sec{font-family:var(--mono);font-size:16px;font-weight:300;color:var(--gray);margin-left:2px}
+.hero-greet{font-size:12px;font-weight:300;color:var(--gray-light)}
+.topbar-r{display:flex;align-items:center;gap:14px}
+.hdr-date{font-size:9px;color:var(--gray)}
+.hdr-badge{font-family:var(--mono);font-size:7px;padding:2px 8px;border:1px solid var(--accent-border);border-radius:4px;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;background:var(--accent-dim)}
+/* 4 cols: clocks | rates | goals | hermes news */
+.content{display:grid;grid-template-columns:.5fr .95fr .85fr 1.05fr;gap:10px;align-items:stretch;min-height:0;overflow:hidden}
+.panel{background:linear-gradient(180deg,var(--card-top) 0%,var(--card) 100%);border:1px solid var(--border);border-radius:12px;padding:12px 14px;box-shadow:0 8px 32px rgba(0,0,0,.5),0 2px 8px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.05);transition:var(--tr);display:flex;flex-direction:column;overflow:hidden;height:100%}
+.panel:hover{transform:translateY(-2px);box-shadow:0 14px 44px rgba(0,0,0,.6),0 0 40px rgba(74,144,217,.04),inset 0 1px 0 rgba(255,255,255,.07);border-color:var(--accent-border)}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-shrink:0}
+.ph-l{display:flex;align-items:center;gap:5px}
+.ph-icon{width:11px;height:11px;color:var(--accent);opacity:.8}
+.ph-title{font-size:7px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gray)}
+.ph-hint{font-size:6px;color:var(--gray);opacity:.5;font-style:italic}
+/* Single-column clocks */
+.clk-col{display:flex;flex-direction:column;gap:4px;flex:1}
+.clk{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);cursor:pointer;transition:var(--tr);user-select:none}
+.clk:hover{background:rgba(74,144,217,.06);border-color:var(--accent-border)}
+.clk.on{border-color:var(--accent);background:var(--accent-dim)}
+.clk.on .clk-name{color:var(--accent)}
+.clk-flag{font-size:12px;line-height:1;flex-shrink:0}
+.clk-mid{flex:1;min-width:0}
+.clk-name{font-size:8px;font-weight:500;color:var(--gray-light);transition:var(--tr)}
+.clk-date{font-size:7px;color:var(--gray)}
+.clk-time{font-family:var(--mono);font-size:18px;font-weight:300;font-variant-numeric:tabular-nums;flex-shrink:0}
+.clk-diff{font-size:6px;font-family:var(--mono);color:var(--accent);opacity:.7;flex-shrink:0;min-width:24px;text-align:right}
+.wx-div{border:none;border-top:1px solid var(--border);margin:6px 0 4px}
+.wx-compact{display:flex;align-items:center;gap:8px}
+.wx-icon{font-size:26px;line-height:1}
+.wx-info{display:flex;flex-direction:column}
+.wx-temp{font-family:var(--mono);font-size:20px;font-weight:300}
+.wx-desc{font-size:7px;color:var(--gray-light);text-transform:capitalize}
+.wx-city-label{font-size:6px;color:var(--gray)}
+.wx-row{display:flex;gap:8px;margin-top:3px;flex-wrap:wrap}
+.wx-stat{font-family:var(--mono);font-size:8px;color:var(--gray-light)}
+.wx-stat span{color:var(--gray);font-family:var(--font);font-size:6px;margin-right:2px}
+/* Currencies */
+.cur-list{flex:1;display:flex;flex-direction:column;justify-content:flex-start;gap:0;overflow-y:auto}
+.cur-list::-webkit-scrollbar{width:3px}
+.cur-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:3px}
+.cur-section{font-size:7px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gray);padding:5px 6px 2px;opacity:.6}
+.cur-section:first-child{padding-top:0}
+.cur-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;padding:4px 6px;border-radius:5px;transition:background .2s;gap:6px}
+.cur-row:hover{background:rgba(255,255,255,.02)}
+.cur-info{display:flex;align-items:center;gap:5px}
+.cur-flag{font-size:13px}
+.cur-code{font-family:var(--mono);font-size:9px;font-weight:500}
+.cur-label{font-size:6px;color:var(--gray)}
+.cur-trend{display:flex;align-items:center;gap:2px;font-family:var(--mono);font-size:8px;font-weight:500;min-width:46px;justify-content:flex-end}
+.cur-trend.up{color:var(--green)}.cur-trend.down{color:var(--red)}.cur-trend.flat{color:var(--gray)}
+.cur-trend svg{width:9px;height:9px}
+.cur-val{text-align:right;min-width:60px}
+.cur-rate{font-family:var(--mono);font-size:11px;font-weight:400;font-variant-numeric:tabular-nums}
+.cur-unit{font-size:6px;color:var(--gray)}
+/* Calendar */
+/* Goals */
+.goals-body{flex:1;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.goals-body::-webkit-scrollbar{width:3px}
+.goals-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:3px}
+.goal-section{font-size:8px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);padding:8px 0 4px;flex-shrink:0}
+.goal-section:first-child{padding-top:0}
+.goal{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:7px;background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.04);transition:var(--tr);flex-shrink:0}
+.goal:hover{background:rgba(200,169,126,.04);border-color:rgba(200,169,126,.15)}
+.goal-check{width:13px;height:13px;border:1.5px solid rgba(200,169,126,.3);border-radius:3px;flex-shrink:0;margin-top:1px}
+.goal-text{font-size:11px;font-weight:400;line-height:1.45;flex:1}
+.goal-due{font-family:var(--mono);font-size:8px;color:var(--orange);flex-shrink:0;margin-top:1px}
+.goals-note{font-size:6px;color:var(--gray);text-align:center;padding:4px 0 0;opacity:.5;font-style:italic}
+/* Hermes news feed */
+.hermes-body{flex:1;display:flex;flex-direction:column;gap:5px;overflow-y:auto;padding-right:3px}
+.hermes-body::-webkit-scrollbar{width:3px}
+.hermes-body::-webkit-scrollbar-thumb{background:rgba(74,144,217,.2);border-radius:3px}
+.news{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:8px;background:rgba(74,144,217,.04);border:1px solid rgba(74,144,217,.08);transition:var(--tr);flex-shrink:0;cursor:pointer;text-decoration:none}
+.news:hover{background:rgba(74,144,217,.08);border-color:var(--accent-border);transform:translateX(2px)}
+.news-top{display:flex;align-items:center;gap:6px}
+.news-cat{font-size:7px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:3px;flex-shrink:0}
+.news-cat.ai{background:rgba(74,144,217,.15);color:var(--accent)}
+.news-cat.biz{background:rgba(200,169,126,.15);color:var(--gold)}
+.news-cat.market{background:rgba(74,222,128,.15);color:var(--green)}
+.news-cat.tech{background:rgba(247,147,26,.15);color:var(--orange)}
+.news-time{font-family:var(--mono);font-size:7px;color:var(--gray);margin-left:auto;flex-shrink:0}
+.news-title{font-size:12px;font-weight:500;line-height:1.4;color:var(--white)}
+.news-desc{font-size:9px;color:var(--gray-light);line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.news-src{font-size:7px;color:var(--gray);opacity:.7;margin-top:1px}
+.hermes-head{display:flex;align-items:center;gap:5px}
+.hermes-pulse{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent-glow);animation:pulse 2s ease-in-out infinite;flex-shrink:0}
+.hermes-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
+.hermes-empty-icon{font-size:26px;opacity:.4}
+.hermes-empty-text{font-size:8px;color:var(--gray);line-height:1.6;max-width:160px}
+.hermes-note{font-size:6px;color:var(--gray);text-align:center;padding:4px 0 0;opacity:.5;font-style:italic}
+/* Footer */
+.ftr{display:flex;justify-content:space-between;align-items:center;padding:3px 0 0;border-top:1px solid var(--border);margin-top:3px}
+.ftr-l{font-size:7px;color:var(--gray);letter-spacing:2px;text-transform:uppercase;font-weight:500}
+.ftr-l a{color:var(--accent);text-decoration:none;font-weight:600}
+.ftr-r{display:flex;align-items:center;gap:12px}
+.ftr-upd{font-family:var(--mono);font-size:7px;color:var(--gray)}
+.ftr-dot{width:4px;height:4px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(74,222,128,.5);animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.ld{animation:lp 1.5s ease-in-out infinite}@keyframes lp{0%,100%{opacity:1}50%{opacity:.3}}
+.fi{animation:fu .5s cubic-bezier(.16,1,.3,1) backwards}
+.f1{animation-delay:0s}.f2{animation-delay:.06s}.f3{animation-delay:.12s}.f4{animation-delay:.18s}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<canvas id="ptc"></canvas><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+<div class="dash">
+<div class="topbar">
+  <div class="logo"><span class="logo-name">Denis Rogov</span><span class="logo-dot"></span><span class="logo-sub">Dashboard</span></div>
+  <div class="hero-inline"><span class="hero-city" id="heroCity">ГУАНЧЖОУ</span><span class="hero-time" id="heroTime">--:--</span><span class="hero-sec" id="heroSec">00</span><span class="hero-greet" id="greet"></span></div>
+  <div class="topbar-r"><span class="hdr-date" id="hdrDate">—</span><span class="hdr-badge">DenRogov.com</span></div>
+</div>
+<div class="content">
+  <!-- Col 1: Clocks + Weather -->
+  <div class="panel fi f1">
+    <div class="ph"><div class="ph-l"><svg class="ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span class="ph-title">Время</span></div></div>
+    <div class="clk-col" id="clkGrid"></div>
+    <hr class="wx-div">
+    <div class="wx-compact"><span class="wx-icon" id="wxIcon">🌤</span><div class="wx-info"><div class="wx-temp ld" id="wxTemp">—°</div><div class="wx-desc" id="wxDesc">—</div><div class="wx-city-label" id="wxCity">—</div></div></div>
+    <div class="wx-row"><div class="wx-stat"><span>Ощущ.</span><span id="wxFeel">—</span></div><div class="wx-stat"><span>Влажн.</span><span id="wxHum">—</span></div><div class="wx-stat"><span>Ветер</span><span id="wxWind">—</span></div></div>
+  </div>
+  <!-- Col 2: Currencies -->
+  <div class="panel fi f2">
+    <div class="ph"><div class="ph-l"><svg class="ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg><span class="ph-title">Курсы</span></div><span class="ph-hint" id="rateSrc">—</span></div>
+    <div class="cur-list" id="curGrid"></div>
+  </div>
+  <!-- Col 3: Goals -->
+  <div class="panel fi f3">
+    <div class="ph"><div class="ph-l"><svg class="ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--gold)"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span class="ph-title" style="color:var(--gold)">Цели</span></div></div>
+    <div class="goals-body">
+      <div class="goal-section">🎯 На год</div>
+      <div class="goal"><div class="goal-check"></div><div class="goal-text">Успех Бразильской локации + 2-3 крупных продажи в регионе</div><div class="goal-due">31 дек</div></div>
+      <div class="goal"><div class="goal-check"></div><div class="goal-text">Запустить AI очки под нашей ТМ и продать 2000+ штук</div><div class="goal-due">31 авг</div></div>
+      <div class="goal"><div class="goal-check"></div><div class="goal-text">Получить паспорт Аргентины</div><div class="goal-due">30 сен</div></div>
+      <div class="goal-section">📌 На квартал</div>
+      <div class="goal"><div class="goal-check"></div><div class="goal-text">Запустить portal-ai + продажи + блог</div><div class="goal-due">след. ср</div></div>
+      <div class="goal"><div class="goal-check"></div><div class="goal-text">VR выставка в Китае → пул партнёров</div><div class="goal-due">15 май</div></div>
+      <div class="goal"><div class="goal-check"></div><div class="goal-text">Мастермайнд по AI для сотрудников</div><div class="goal-due">след. ср</div></div>
+      <div class="goal-section">📋 На месяц</div>
+      <div class="goal"><div class="goal-check"></div><div class="goal-text">Найти платформу для продажи девайсов</div><div class="goal-due">след. ср</div></div>
+      <div class="goal"><div class="goal-check"></div><div class="goal-text">Протестировать все образцы AI очков</div><div class="goal-due">след. ср</div></div>
+    </div>
+    <div class="goals-note">Статичные · Попроси Claude обновить</div>
+  </div>
+  <!-- Col 4: Hermes news feed -->
+  <div class="panel fi f4">
+    <div class="ph"><div class="hermes-head"><div class="hermes-pulse"></div><span class="ph-title" style="color:var(--accent)">Лента Гермеса</span></div><span class="ph-hint" id="hermesUpd">—</span></div>
+    <div class="hermes-body" id="hermesBody">
+      <div class="hermes-empty"><div class="hermes-empty-icon">📡</div><div class="hermes-empty-text">Ожидание данных от Гермеса...</div></div>
+    </div>
+    <div class="hermes-note" id="hermesNote">news.json</div>
+  </div>
+</div>
+<div class="ftr"><span class="ftr-l"><a href="https://denrogov.com" target="_blank">DenRogov.com</a></span><div class="ftr-r"><span class="ftr-upd" id="updTime">—</span><div class="ftr-dot"></div></div></div>
+</div>
+<script>
+(function(){const cv=document.getElementById('ptc'),ctx=cv.getContext('2d');let W,H,pts=[];function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;pts=[];for(let i=0;i<40;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,r:Math.random()*1.2+.4,a:Math.random()*.1+.03})}function dr(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(74,144,217,${p.a})`;ctx.fill()});for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<120){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(74,144,217,${.02*(1-d/120)})`;ctx.lineWidth=.5;ctx.stroke()}}requestAnimationFrame(dr)}rs();dr();addEventListener('resize',rs)})();
+const ZONES=[{id:'saopaulo',tz:'America/Sao_Paulo',label:'Сан-Паулу',flag:'🇧🇷',lat:-23.55,lon:-46.63},{id:'dubai',tz:'Asia/Dubai',label:'Дубай',flag:'🇦🇪',lat:25.2,lon:55.27},{id:'moscow',tz:'Europe/Moscow',label:'Москва',flag:'🇷🇺',lat:55.75,lon:37.62},{id:'guangzhou',tz:'Asia/Shanghai',label:'Гуанчжоу',flag:'🇨🇳',lat:23.13,lon:113.26}];
+const HOME='America/Argentina/Buenos_Aires';let aId=localStorage.getItem('dz')||'guangzhou';
+const FIAT=[{id:'usd-rub',label:'Доллар → Рубль',unit:'₽',flag:'🇺🇸'},{id:'cny-rub',label:'Юань → Рубль',unit:'₽',flag:'🇨🇳'},{id:'usd-cny',label:'Доллар → Юань',unit:'¥',flag:'🇺🇸'},{id:'usd-brl',label:'Доллар → Реал',unit:'R$',flag:'🇺🇸'},{id:'usd-ars',label:'Доллар → Песо',unit:'$AR',flag:'🇦🇷'}];
+const CRYPTO=[{id:'bitcoin',sym:'BTC',label:'Bitcoin',c:'#f7931a'},{id:'ethereum',sym:'ETH',label:'Ethereum',c:'#627EEA'},{id:'near',sym:'NEAR',label:'NEAR',c:'#00C1DE'},{id:'solana',sym:'SOL',label:'Solana',c:'#9945FF'},{id:'hyperliquid',sym:'HYPE',label:'Hyperliquid',c:'#00FFA3'},{id:'worldcoin-wld',sym:'WLD',label:'Worldcoin',c:'#aaa'}];
+const prevR=JSON.parse(localStorage.getItem('dr')||'{}');
+const AU='<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 10V2M2 5l4-3 4 3"/></svg>';
+const AD='<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2v8M2 7l4 3 4-3"/></svg>';
+const AF='<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M8 4l2 2-2 2"/></svg>';
+const WMO={0:['☀️','Ясно'],1:['🌤','Малооблачно'],2:['⛅','Облачно'],3:['☁️','Пасмурно'],45:['🌫','Туман'],51:['🌦','Морось'],61:['🌧','Дождь'],63:['🌧','Дождь'],65:['🌧','Ливень'],71:['🌨','Снег'],75:['❄️','Снегопад'],80:['🌦','Ливень'],82:['⛈','Шторм'],95:['⛈','Гроза']};
+function renderClocks(){const g=document.getElementById('clkGrid');g.innerHTML='';ZONES.forEach(z=>{const d=document.createElement('div');d.className='clk'+(z.id===aId?' on':'');d.id='c-'+z.id;d.onclick=()=>{aId=z.id;localStorage.setItem('dz',z.id);document.querySelectorAll('.clk').forEach(e=>e.classList.remove('on'));d.classList.add('on');updateClocks();fetchWeather()};d.innerHTML=`<span class="clk-flag">${z.flag}</span><div class="clk-mid"><div class="clk-name">${z.label}</div><div class="clk-date">—</div></div><span class="clk-time">--:--</span><span class="clk-diff"></span>`;g.appendChild(d)})}
+function renderCur(){const g=document.getElementById('curGrid');g.innerHTML='<div class="cur-section">Фиатные валюты</div>';
+FIAT.forEach(c=>{g.innerHTML+=`<div class="cur-row"><div class="cur-info"><span class="cur-flag">${c.flag}</span><div><div class="cur-code">${c.id.toUpperCase().replace('-','/')}</div><div class="cur-label">${c.label}</div></div></div><div class="cur-trend flat" id="trend-${c.id}">${AF}<span>—</span></div><div class="cur-val"><span class="cur-rate ld" id="r-${c.id}">—</span><div class="cur-unit">${c.unit}</div></div></div>`});
+g.innerHTML+='<div class="cur-section">Криптовалюты</div>';
+CRYPTO.forEach(c=>{g.innerHTML+=`<div class="cur-row"><div class="cur-info"><span class="cur-flag" style="font-size:10px;color:${c.c};font-family:var(--mono);font-weight:700">${c.sym.charAt(0)}</span><div><div class="cur-code">${c.sym}/USD</div><div class="cur-label">${c.label}</div></div></div><div class="cur-trend flat" id="trend-${c.id}">${AF}<span>—</span></div><div class="cur-val"><span class="cur-rate ld" id="r-${c.id}">—</span><div class="cur-unit">$</div></div></div>`})}
+function setTrend(id,nv){const el=document.getElementById('trend-'+id);if(!el)return;const pv=prevR[id];if(pv===undefined||Math.abs(nv-pv)<.0001){el.className='cur-trend flat';el.innerHTML=AF+'<span>—</span>'}else if(nv>pv){el.className='cur-trend up';el.innerHTML=AU+`<span>+${((nv-pv)/pv*100).toFixed(1)}%</span>`}else{el.className='cur-trend down';el.innerHTML=AD+`<span>-${((pv-nv)/pv*100).toFixed(1)}%</span>`}prevR[id]=nv;localStorage.setItem('dr',JSON.stringify(prevR))}
+function setCT(id,ch){const el=document.getElementById('trend-'+id);if(!el)return;if(ch>0){el.className='cur-trend up';el.innerHTML=AU+`<span>+${ch.toFixed(1)}%</span>`}else if(ch<0){el.className='cur-trend down';el.innerHTML=AD+`<span>${ch.toFixed(1)}%</span>`}else{el.className='cur-trend flat';el.innerHTML=AF+'<span>0%</span>'}}
+function greet(h){return h>=5&&h<12?'Доброе утро, Денис':h>=12&&h<18?'Добрый день, Денис':h>=18&&h<23?'Добрый вечер, Денис':'Доброй ночи, Денис'}
+function utcO(d,tz){return Math.round((new Date(d.toLocaleString('en-US',{timeZone:tz}))-new Date(d.toLocaleString('en-US',{timeZone:'UTC'})))/36e5)}
+function updateClocks(){const n=new Date(),az=ZONES.find(z=>z.id===aId)||ZONES[3];document.getElementById('heroTime').textContent=new Intl.DateTimeFormat('ru',{timeZone:az.tz,hour:'2-digit',minute:'2-digit',hour12:false}).format(n);document.getElementById('heroSec').textContent=new Intl.DateTimeFormat('en',{timeZone:az.tz,second:'2-digit'}).format(n).padStart(2,'0');document.getElementById('heroCity').textContent=az.label.toUpperCase();document.getElementById('greet').textContent=greet(parseInt(new Intl.DateTimeFormat('en',{timeZone:az.tz,hour:'numeric',hour12:false}).format(n)));document.getElementById('hdrDate').textContent=new Intl.DateTimeFormat('ru',{timeZone:HOME,weekday:'long',day:'numeric',month:'long'}).format(n);const ho=utcO(n,HOME);ZONES.forEach(z=>{const el=document.getElementById('c-'+z.id);if(!el)return;el.querySelector('.clk-time').textContent=new Intl.DateTimeFormat('ru',{timeZone:z.tz,hour:'2-digit',minute:'2-digit',hour12:false}).format(n);el.querySelector('.clk-date').textContent=new Intl.DateTimeFormat('ru',{timeZone:z.tz,day:'numeric',month:'short',weekday:'short'}).format(n);const d=utcO(n,z.tz)-ho;el.querySelector('.clk-diff').textContent=`${d>=0?'+':''}${d}ч`})}
+function setR(id,v,dec=2){const el=document.getElementById('r-'+id);if(el){el.textContent=v>=1000?'$'+v.toLocaleString('en-US',{maximumFractionDigits:0}):v.toFixed(dec);el.classList.remove('ld')}}
+async function fetchRates(){try{const r=await fetch('https://open.er-api.com/v6/latest/USD'),d=await r.json();if(d?.rates){const R=d.rates;if(R.RUB){setR('usd-rub',R.RUB);setTrend('usd-rub',R.RUB)}if(R.RUB&&R.CNY){const v=R.RUB/R.CNY;setR('cny-rub',v);setTrend('cny-rub',v)}if(R.CNY){setR('usd-cny',R.CNY);setTrend('usd-cny',R.CNY)}if(R.BRL){setR('usd-brl',R.BRL);setTrend('usd-brl',R.BRL)}if(R.ARS){setR('usd-ars',R.ARS);setTrend('usd-ars',R.ARS)}document.getElementById('rateSrc').textContent='ExchangeRate API'}}catch(e){}
+try{const ids=CRYPTO.map(c=>c.id).join(',');const r=await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`);const d=await r.json();CRYPTO.forEach(c=>{if(d[c.id]){setR(c.id,d[c.id].usd,d[c.id].usd<1?4:d[c.id].usd<100?2:0);setCT(c.id,d[c.id].usd_24h_change||0)}})}catch(e){}
+document.getElementById('updTime').textContent='UPD '+new Intl.DateTimeFormat('ru',{timeZone:HOME,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date())}
+async function fetchWeather(){const az=ZONES.find(z=>z.id===aId)||ZONES[3];document.getElementById('wxCity').textContent=az.flag+' '+az.label;try{const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${az.lat}&longitude=${az.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&timezone=auto`);const d=await r.json();if(d?.current){const c=d.current,wmo=WMO[c.weather_code]||['🌤','—'];document.getElementById('wxIcon').textContent=wmo[0];document.getElementById('wxTemp').textContent=Math.round(c.temperature_2m)+'°C';document.getElementById('wxTemp').classList.remove('ld');document.getElementById('wxDesc').textContent=wmo[1];document.getElementById('wxFeel').textContent=Math.round(c.apparent_temperature)+'°C';document.getElementById('wxHum').textContent=c.relative_humidity_2m+'%';document.getElementById('wxWind').textContent=Math.round(c.wind_speed_10m)+' км/ч'}}catch(e){}}
+// ── Hermes news feed ──
+const CAT_LABELS={ai:'AI',biz:'Бизнес',market:'Рынки',tech:'Tech'};
+function timeAgo(iso){const d=new Date(iso),now=new Date(),s=Math.floor((now-d)/1000);
+if(s<60)return 'только что';if(s<3600)return Math.floor(s/60)+' мин';if(s<86400)return Math.floor(s/3600)+' ч';return Math.floor(s/86400)+' д'}
+async function fetchHermes(){
+  const body=document.getElementById('hermesBody');
+  try{
+    // Cache-bust to always get fresh news.json
+    const r=await fetch('news.json?t='+Date.now());
+    if(!r.ok)throw new Error('no file');
+    const d=await r.json();
+    if(!d.items||!d.items.length){body.innerHTML='<div class="hermes-empty"><div class="hermes-empty-icon">📭</div><div class="hermes-empty-text">Лента пуста</div></div>';return}
+    let html='';
+    d.items.forEach(n=>{
+      const cat=n.category||'ai';
+      const catLabel=CAT_LABELS[cat]||cat;
+      const time=n.date?timeAgo(n.date):'';
+      const tag=n.url?'a':'div';
+      const href=n.url?` href="${n.url}" target="_blank"`:'';
+      html+=`<${tag} class="news"${href}><div class="news-top"><span class="news-cat ${cat}">${catLabel}</span><span class="news-time">${time}</span></div><div class="news-title">${n.title||''}</div>${n.summary?`<div class="news-desc">${n.summary}</div>`:''}${n.source?`<div class="news-src">${n.source}</div>`:''}</${tag}>`;
+    });
+    body.innerHTML=html;
+    if(d.updated){document.getElementById('hermesUpd').textContent=timeAgo(d.updated);}
+    document.getElementById('hermesNote').textContent='Обновлено Гермесом';
+  }catch(e){
+    body.innerHTML='<div class="hermes-empty"><div class="hermes-empty-icon">📡</div><div class="hermes-empty-text">news.json не найден.<br>Гермес ещё не публиковал ленту.</div></div>';
+  }
+}
+
+renderClocks();renderCur();updateClocks();setInterval(updateClocks,1000);setTimeout(()=>{fetchRates();fetchWeather();fetchHermes()},300);setInterval(fetchRates,5*60*1000);setInterval(fetchWeather,15*60*1000);setInterval(fetchHermes,10*60*1000);
+</script>
+</body>
+</html>
