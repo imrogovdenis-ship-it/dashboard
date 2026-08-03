@@ -1,27 +1,85 @@
 {
-  "updated": "2026-03-26T09:00:00Z",
+  "updated": "2026-08-03T21:40:45.148264+00:00",
   "items": [
     {
+      "category": "portal",
+      "title": "Is your name part of our legacy of exploration and discovery?\n\nAhead of its laun...",
+      "summary": "Is your name part of our legacy of exploration and discovery?\n\nAhead of its launch later this month, we installed a plaque on @NASARoman holding an SD card with over one million submitted names, continuing our tradition of leaving humanity’s mark on ...",
+      "source": "@NASA",
+      "url": "https://x.com/NASA/status/2084359126121853051",
+      "date": "2026-08-03T19:21:55.000Z"
+    },
+    {
+      "category": "portal",
+      "title": "The CLARITY act represents a ton of bi-partisan work to finally establish clear ...",
+      "summary": "The CLARITY act represents a ton of bi-partisan work to finally establish clear rules for crypto in America, which 70% of Americans say we should already have.\n\nWhether people love crypto or hate it, there is broad consensus that we need clear rules ...",
+      "source": "@brian_armstrong",
+      "url": "https://x.com/brian_armstrong/status/2084365320521933047",
+      "date": "2026-08-03T19:46:32.000Z"
+    },
+    {
+      "category": "portal",
+      "title": "1 in 4 Americans hold crypto - and passing CLARITY is a priority for them.",
+      "summary": "1 in 4 Americans hold crypto - and passing CLARITY is a priority for them. \n\nAmerican voters are 2x more likely to support a candidate that backs CLARITY (vs those less likely), regardless of party preference. So the stakes are high for Senate leader...",
+      "source": "@brian_armstrong",
+      "url": "https://x.com/brian_armstrong/status/2084354068160352689",
+      "date": "2026-08-03T19:01:49.000Z"
+    },
+    {
+      "category": "portal",
+      "title": "AI agents are already beginning to transact on TRON.",
+      "summary": "AI agents are already beginning to transact on TRON.\n\nJoin @cryptoquant_com and TRON on August 5 to explore gasless payments, cross-chain liquidity, and the infrastructure supporting the agentic economy.\n\nSet a reminder below. 👇 https://t.co/pyOhaocQ...",
+      "source": "@trondao",
+      "url": "https://x.com/trondao/status/2084349212020416524",
+      "date": "2026-08-03T18:42:32.000Z"
+    },
+    {
+      "category": "portal",
+      "title": "The Senate has 4 days to pass the CLARITY Act before recess.",
+      "summary": "The Senate has 4 days to pass the CLARITY Act before recess. 👀\n\nContact your Senator and tell them to pass the bill! 🇺🇸 https://t.co/3ZHZEmh7UC",
+      "source": "@BitcoinMagazine",
+      "url": "https://x.com/BitcoinMagazine/status/2084361097058939140",
+      "date": "2026-08-03T19:29:45.000Z"
+    },
+    {
       "category": "ai",
-      "title": "Пример новости от Гермеса",
-      "summary": "Это образец структуры. Гермес будет перезаписывать этот файл реальными новостями, которые он собрал из своих источников.",
-      "source": "Hermes AI",
-      "url": "https://denrogov.com",
-      "date": "2026-03-26T08:30:00Z"
+      "title": "Who’s legally to blame for Anthropic and OpenAI’s autonomous AI hacks? It’s comp...",
+      "summary": "Who’s legally to blame for Anthropic and OpenAI’s autonomous AI hacks? It’s complicated https://t.co/xfr6JG8Yby",
+      "source": "@TechCrunch",
+      "url": "https://x.com/TechCrunch/status/2084366151073800195",
+      "date": "2026-08-03T19:49:50.000Z"
     },
     {
-      "category": "biz",
-      "title": "Бизнес-сводка появится здесь",
-      "summary": "Категории: ai (синий), biz (золотой), market (зелёный), tech (оранжевый). Поле url — опционально, делает карточку кликабельной.",
-      "source": "Portal Tech",
-      "date": "2026-03-26T07:00:00Z"
+      "category": "portal",
+      "title": "The quantum threat is real, and it’s coming for blockchains.",
+      "summary": "The quantum threat is real, and it’s coming for blockchains.\n\nNEAR Co-founder Illia Polosukhin explains the security risk for the wider industry, and what NEAR is shipping to help users protect their crypto assets. https://t.co/hoP5kVN4El",
+      "source": "@NEARProtocol",
+      "url": "https://x.com/NEARProtocol/status/2084353876879175850",
+      "date": "2026-08-03T19:01:04.000Z"
     },
     {
-      "category": "market",
-      "title": "Рыночные апдейты",
-      "summary": "Лента обновляется в дашборде каждые 10 минут автоматически.",
-      "source": "Markets",
-      "date": "2026-03-26T06:00:00Z"
+      "category": "portal",
+      "title": "We're bringing the world's biggest oil benchmarks to Coinbase.",
+      "summary": "We're bringing the world's biggest oil benchmarks to Coinbase.\n\nWTI and Brent crude oil perpetual futures, live now for eligible non-US traders.\n\n24/7 trading, USDC-settled, and no expiry. https://t.co/6r8AJ1mrhF",
+      "source": "@coinbase",
+      "url": "https://x.com/coinbase/status/2084364777040552226",
+      "date": "2026-08-03T19:44:23.000Z"
+    },
+    {
+      "category": "portal",
+      "title": "NEW: 🇺🇸 $3.7 billion GSR Ventures talks CLARITY ACT with Charles Schwab:\n\n\"It's ...",
+      "summary": "NEW: 🇺🇸 $3.7 billion GSR Ventures talks CLARITY ACT with Charles Schwab:\n\n\"It's just about certainty as to the path...to have the United States be the crypto capital of the world, which means the global market would be headquartered here\" 🚀 https://t...",
+      "source": "@BitcoinMagazine",
+      "url": "https://x.com/BitcoinMagazine/status/2084392562190610786",
+      "date": "2026-08-03T21:34:47.000Z"
+    },
+    {
+      "category": "portal",
+      "title": "JUST IN: $5.3 billion Cardone Capital bought another 350 BTC worth $22.3 million...",
+      "summary": "JUST IN: $5.3 billion Cardone Capital bought another 350 BTC worth $22.3 million 💥 https://t.co/ZMmUJhZSTP",
+      "source": "@BitcoinMagazine",
+      "url": "https://x.com/BitcoinMagazine/status/2084376449830568182",
+      "date": "2026-08-03T20:30:46.000Z"
     }
   ]
 }
