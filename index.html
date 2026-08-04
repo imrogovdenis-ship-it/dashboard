@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<meta name="dz-build" content="tz-v3-bangkok">
+<meta name="dz-build" content="tz-v4-forecast3">
 <title>Denis Rogov — Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,6 +65,14 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);height:100v
 .wx-row{display:flex;gap:8px;margin-top:3px;flex-wrap:wrap}
 .wx-stat{font-family:var(--mono);font-size:8px;color:var(--gray-light)}
 .wx-stat span{color:var(--gray);font-family:var(--font);font-size:6px;margin-right:2px}
+.wx-forecast{display:flex;flex-direction:column;gap:3px;margin-top:6px;flex:1;min-height:0;justify-content:flex-end}
+.wx-fc-title{font-size:6px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);opacity:.6;padding:2px 0 1px}
+.wx-fc-row{display:grid;grid-template-columns:28px 16px 1fr;align-items:center;gap:6px;padding:4px 6px;border-radius:5px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)}
+.wx-fc-day{font-family:var(--mono);font-size:8px;color:var(--gray-light);text-transform:capitalize}
+.wx-fc-ico{font-size:12px;line-height:1;text-align:center}
+.wx-fc-t{font-family:var(--mono);font-size:9px;color:var(--white);text-align:right;font-variant-numeric:tabular-nums}
+.wx-fc-t span{color:var(--gray);font-size:8px;margin-left:4px}
+
 /* Currencies */
 .cur-list{flex:1;display:flex;flex-direction:column;justify-content:flex-start;gap:0;overflow-y:auto}
 .cur-list::-webkit-scrollbar{width:3px}
@@ -148,6 +156,12 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);height:100v
     <hr class="wx-div">
     <div class="wx-compact"><span class="wx-icon" id="wxIcon">🌤</span><div class="wx-info"><div class="wx-temp ld" id="wxTemp">—°</div><div class="wx-desc" id="wxDesc">—</div><div class="wx-city-label" id="wxCity">—</div></div></div>
     <div class="wx-row"><div class="wx-stat"><span>Ощущ.</span><span id="wxFeel">—</span></div><div class="wx-stat"><span>Влажн.</span><span id="wxHum">—</span></div><div class="wx-stat"><span>Ветер</span><span id="wxWind">—</span></div></div>
+    <div class="wx-forecast" id="wxForecast">
+      <div class="wx-fc-title">3 дня</div>
+      <div class="wx-fc-row"><span class="wx-fc-day">—</span><span class="wx-fc-ico">·</span><span class="wx-fc-t">—°<span>/—°</span></span></div>
+      <div class="wx-fc-row"><span class="wx-fc-day">—</span><span class="wx-fc-ico">·</span><span class="wx-fc-t">—°<span>/—°</span></span></div>
+      <div class="wx-fc-row"><span class="wx-fc-day">—</span><span class="wx-fc-ico">·</span><span class="wx-fc-t">—°<span>/—°</span></span></div>
+    </div>
   </div>
   <!-- Col 2: Currencies -->
   <div class="panel fi f2">
@@ -200,7 +214,7 @@ const TZ_ALIAS={
 'Europe/Moscow':'moscow','Europe/Simferopol':'moscow'
 };
 const BROWSER_TZ=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'UTC';
-const TZ_VER='3';
+const TZ_VER='4';
 if(localStorage.getItem('dz-ver')!==TZ_VER){localStorage.removeItem('dz');localStorage.removeItem('dz-manual');localStorage.setItem('dz-ver',TZ_VER)}
 function zoneByTz(tz){const hit=ZONES.find(z=>z.tz===tz);if(hit)return hit;const id=TZ_ALIAS[tz];return id?ZONES.find(z=>z.id===id):null}
 function ensureLocalZone(){
@@ -245,7 +259,7 @@ function setR(id,v,dec=2){const el=document.getElementById('r-'+id);if(el){el.te
 async function fetchRates(){try{const r=await fetch('https://open.er-api.com/v6/latest/USD'),d=await r.json();if(d?.rates){const R=d.rates;if(R.RUB){setR('usd-rub',R.RUB);setTrend('usd-rub',R.RUB)}if(R.RUB&&R.CNY){const v=R.RUB/R.CNY;setR('cny-rub',v);setTrend('cny-rub',v)}if(R.CNY){setR('usd-cny',R.CNY);setTrend('usd-cny',R.CNY)}if(R.BRL){setR('usd-brl',R.BRL);setTrend('usd-brl',R.BRL)}if(R.ARS){setR('usd-ars',R.ARS);setTrend('usd-ars',R.ARS)}document.getElementById('rateSrc').textContent='ExchangeRate API'}}catch(e){}
 try{const ids=CRYPTO.map(c=>c.id).join(',');const r=await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`);const d=await r.json();CRYPTO.forEach(c=>{if(d[c.id]){setR(c.id,d[c.id].usd,d[c.id].usd<1?4:d[c.id].usd<100?2:0);setCT(c.id,d[c.id].usd_24h_change||0)}})}catch(e){}
 document.getElementById('updTime').textContent='UPD '+new Intl.DateTimeFormat('ru',{timeZone:HOME,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date())}
-async function fetchWeather(){const az=ZONES.find(z=>z.id===aId)||ensureLocalZone();if(az.lat==null||az.lon==null){await new Promise(res=>{if(!navigator.geolocation){az.lat=13.76;az.lon=100.50;res();return}navigator.geolocation.getCurrentPosition(p=>{az.lat=p.coords.latitude;az.lon=p.coords.longitude;res()},()=>{az.lat=13.76;az.lon=100.50;res()},{timeout:5000,maximumAge:6e5})})}document.getElementById('wxCity').textContent=az.flag+' '+az.label;try{const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${az.lat}&longitude=${az.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&timezone=auto`);const d=await r.json();if(d?.current){const c=d.current,wmo=WMO[c.weather_code]||['🌤','—'];document.getElementById('wxIcon').textContent=wmo[0];document.getElementById('wxTemp').textContent=Math.round(c.temperature_2m)+'°C';document.getElementById('wxTemp').classList.remove('ld');document.getElementById('wxDesc').textContent=wmo[1];document.getElementById('wxFeel').textContent=Math.round(c.apparent_temperature)+'°C';document.getElementById('wxHum').textContent=c.relative_humidity_2m+'%';document.getElementById('wxWind').textContent=Math.round(c.wind_speed_10m)+' км/ч'}}catch(e){}}
+async function fetchWeather(){const az=ZONES.find(z=>z.id===aId)||ensureLocalZone();if(az.lat==null||az.lon==null){await new Promise(res=>{if(!navigator.geolocation){az.lat=13.76;az.lon=100.50;res();return}navigator.geolocation.getCurrentPosition(p=>{az.lat=p.coords.latitude;az.lon=p.coords.longitude;res()},()=>{az.lat=13.76;az.lon=100.50;res()},{timeout:5000,maximumAge:6e5})})}document.getElementById('wxCity').textContent=az.flag+' '+az.label;try{const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${az.lat}&longitude=${az.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=4&timezone=${encodeURIComponent(az.tz||'auto')}`);const d=await r.json();if(d?.current){const c=d.current,wmo=WMO[c.weather_code]||['🌤','—'];document.getElementById('wxIcon').textContent=wmo[0];document.getElementById('wxTemp').textContent=Math.round(c.temperature_2m)+'°C';document.getElementById('wxTemp').classList.remove('ld');document.getElementById('wxDesc').textContent=wmo[1];document.getElementById('wxFeel').textContent=Math.round(c.apparent_temperature)+'°C';document.getElementById('wxHum').textContent=c.relative_humidity_2m+'%';document.getElementById('wxWind').textContent=Math.round(c.wind_speed_10m)+' км/ч'}const fc=document.getElementById('wxForecast');if(fc&&d?.daily?.time?.length){const days=d.daily;let html='<div class="wx-fc-title">3 дня · '+az.label+'</div>';const n=Math.min(3,days.time.length);for(let i=0;i<n;i++){const dt=new Date(days.time[i]+'T12:00:00');const day=new Intl.DateTimeFormat('ru',{timeZone:az.tz||HOME,weekday:'short'}).format(dt);const code=days.weather_code[i];const w=WMO[code]||['🌤','—'];const tmax=Math.round(days.temperature_2m_max[i]);const tmin=Math.round(days.temperature_2m_min[i]);html+=`<div class="wx-fc-row"><span class="wx-fc-day">${day}</span><span class="wx-fc-ico">${w[0]}</span><span class="wx-fc-t">${tmax}°<span>/${tmin}°</span></span></div>`}fc.innerHTML=html}}catch(e){}}
 // ── Hermes news feed ──
 const CAT_LABELS={ai:'AI',biz:'Бизнес',market:'Рынки',tech:'Tech'};
 function timeAgo(iso){const d=new Date(iso),now=new Date(),s=Math.floor((now-d)/1000);
