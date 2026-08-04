@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<meta name="dz-build" content="tz-v4-forecast3">
+<meta name="dz-build" content="tz-v5-forecast-lg">
 <title>Denis Rogov — Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,13 +65,13 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);height:100v
 .wx-row{display:flex;gap:8px;margin-top:3px;flex-wrap:wrap}
 .wx-stat{font-family:var(--mono);font-size:8px;color:var(--gray-light)}
 .wx-stat span{color:var(--gray);font-family:var(--font);font-size:6px;margin-right:2px}
-.wx-forecast{display:flex;flex-direction:column;gap:3px;margin-top:6px;flex:1;min-height:0;justify-content:flex-end}
-.wx-fc-title{font-size:6px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);opacity:.6;padding:2px 0 1px}
-.wx-fc-row{display:grid;grid-template-columns:28px 16px 1fr;align-items:center;gap:6px;padding:4px 6px;border-radius:5px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)}
-.wx-fc-day{font-family:var(--mono);font-size:8px;color:var(--gray-light);text-transform:capitalize}
-.wx-fc-ico{font-size:12px;line-height:1;text-align:center}
-.wx-fc-t{font-family:var(--mono);font-size:9px;color:var(--white);text-align:right;font-variant-numeric:tabular-nums}
-.wx-fc-t span{color:var(--gray);font-size:8px;margin-left:4px}
+.wx-forecast{display:flex;flex-direction:column;gap:6px;margin-top:10px;flex:1;min-height:0;justify-content:flex-end}
+.wx-fc-title{font-size:8px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--gray);opacity:.75;padding:2px 0 2px}
+.wx-fc-row{display:grid;grid-template-columns:36px 22px 1fr;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.wx-fc-day{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--gray-light);text-transform:capitalize}
+.wx-fc-ico{font-size:18px;line-height:1;text-align:center}
+.wx-fc-t{font-family:var(--mono);font-size:13px;font-weight:400;color:var(--white);text-align:right;font-variant-numeric:tabular-nums}
+.wx-fc-t span{color:var(--gray);font-size:11px;margin-left:5px}
 
 /* Currencies */
 .cur-list{flex:1;display:flex;flex-direction:column;justify-content:flex-start;gap:0;overflow-y:auto}
@@ -214,7 +214,7 @@ const TZ_ALIAS={
 'Europe/Moscow':'moscow','Europe/Simferopol':'moscow'
 };
 const BROWSER_TZ=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'UTC';
-const TZ_VER='4';
+const TZ_VER='5';
 if(localStorage.getItem('dz-ver')!==TZ_VER){localStorage.removeItem('dz');localStorage.removeItem('dz-manual');localStorage.setItem('dz-ver',TZ_VER)}
 function zoneByTz(tz){const hit=ZONES.find(z=>z.tz===tz);if(hit)return hit;const id=TZ_ALIAS[tz];return id?ZONES.find(z=>z.id===id):null}
 function ensureLocalZone(){
