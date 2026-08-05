@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<meta name="dz-build" content="pos-v1-secretary">
+<meta name="dz-build" content="pos-v2-reading">
 <title>Denis Rogov — Personal OS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -104,6 +104,28 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);height:100v
 .goal-text{font-size:11px;font-weight:400;line-height:1.45;flex:1}
 .goal-due{font-family:var(--mono);font-size:8px;color:var(--orange);flex-shrink:0;margin-top:1px}
 .goals-note{font-size:6px;color:var(--gray);text-align:center;padding:4px 0 0;opacity:.5;font-style:italic}
+.rd-tabs{display:flex;gap:4px;margin-bottom:6px}
+.rd-tab{font-family:var(--mono);font-size:7px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px;border:1px solid rgba(255,255,255,.08);color:var(--gray);cursor:pointer;background:transparent}
+.rd-tab.on{color:var(--accent);border-color:var(--accent-border);background:var(--accent-dim)}
+.rd-body{flex:1;display:flex;flex-direction:column;gap:4px;overflow-y:auto;min-height:0}
+.rd-body::-webkit-scrollbar{width:3px}
+.rd-body::-webkit-scrollbar-thumb{background:rgba(74,144,217,.2);border-radius:3px}
+.rd-item{display:flex;flex-direction:column;gap:3px;padding:8px 9px;border-radius:7px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);text-decoration:none;color:inherit;transition:var(--tr);flex-shrink:0}
+.rd-item:hover{border-color:var(--accent-border);background:rgba(74,144,217,.06);transform:translateX(1px)}
+.rd-top{display:flex;align-items:center;gap:6px}
+.rd-st{font-family:var(--mono);font-size:6px;letter-spacing:.8px;text-transform:uppercase;padding:2px 5px;border-radius:3px;flex-shrink:0}
+.rd-st.inbox{background:rgba(74,144,217,.15);color:var(--accent)}
+.rd-st.reading{background:rgba(200,169,126,.15);color:var(--gold)}
+.rd-st.later{background:rgba(138,155,181,.12);color:var(--gray-light)}
+.rd-st.done{background:rgba(74,222,128,.12);color:var(--green)}
+.rd-time{font-family:var(--mono);font-size:7px;color:var(--gray);margin-left:auto}
+.rd-title{font-size:11px;font-weight:500;line-height:1.35;color:var(--white)}
+.rd-meta{font-size:7px;color:var(--gray);display:flex;gap:6px;flex-wrap:wrap}
+.rd-empty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font-size:9px;color:var(--gray);line-height:1.5;padding:12px}
+.rd-add{display:flex;gap:5px;margin-top:6px;flex-shrink:0}
+.rd-add input{flex:1;min-width:0;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:5px;color:var(--white);font-size:10px;padding:6px 8px;outline:none;font-family:var(--mono)}
+.rd-add button{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.5px;padding:6px 8px;border-radius:5px;border:1px solid var(--accent-border);background:var(--accent-dim);color:var(--accent);cursor:pointer;flex-shrink:0}
+
 /* Hermes news feed */
 .hermes-body{flex:1;display:flex;flex-direction:column;gap:5px;overflow-y:auto;padding-right:3px}
 .hermes-body::-webkit-scrollbar{width:3px}
@@ -193,10 +215,21 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);height:100v
     <div class="ph"><div class="ph-l"><svg class="ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg><span class="ph-title">Курсы</span></div><span class="ph-hint" id="rateSrc">—</span></div>
     <div class="cur-list" id="curGrid"></div>
   </div>
-  <!-- Col 3: Goals -->
+  <!-- Col 3: Reading layer + Goals -->
   <div class="panel fi f3">
-    <div class="ph"><div class="ph-l"><svg class="ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--gold)"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span class="ph-title" style="color:var(--gold)">Цели</span></div></div>
-    <div class="goals-body">
+    <div class="ph"><div class="ph-l"><svg class="ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--accent)"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg><span class="ph-title" style="color:var(--accent)">Чтение</span></div><span class="ph-hint" id="rdUpd">—</span></div>
+    <div class="rd-tabs">
+      <div class="rd-tab on" data-rd="inbox">Inbox</div>
+      <div class="rd-tab" data-rd="reading">Читаю</div>
+      <div class="rd-tab" data-rd="later">Later</div>
+      <div class="rd-tab" data-rd="goals">Цели</div>
+    </div>
+    <div class="rd-body" id="rdBody"></div>
+    <div class="rd-add" id="rdAddRow">
+      <input id="rdUrl" type="url" placeholder="https://… добавить в inbox" autocomplete="off" spellcheck="false">
+      <button type="button" id="rdAddBtn">+</button>
+    </div>
+    <div class="goals-body" id="goalsBody" style="display:none">
       <div class="goal-section">🎯 На год</div>
       <div class="goal"><div class="goal-check"></div><div class="goal-text">Успех Бразильской локации + 2-3 крупных продажи в регионе</div><div class="goal-due">31 дек</div></div>
       <div class="goal"><div class="goal-check"></div><div class="goal-text">Запустить AI очки под нашей ТМ и продать 2000+ штук</div><div class="goal-due">31 авг</div></div>
@@ -204,12 +237,11 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);height:100v
       <div class="goal-section">📌 На квартал</div>
       <div class="goal"><div class="goal-check"></div><div class="goal-text">Запустить portal-ai + продажи + блог</div><div class="goal-due">след. ср</div></div>
       <div class="goal"><div class="goal-check"></div><div class="goal-text">VR выставка в Китае → пул партнёров</div><div class="goal-due">15 май</div></div>
-      <div class="goal"><div class="goal-check"></div><div class="goal-text">Мастермайнд по AI для сотрудников</div><div class="goal-due">след. ср</div></div>
       <div class="goal-section">📋 На месяц</div>
       <div class="goal"><div class="goal-check"></div><div class="goal-text">Найти платформу для продажи девайсов</div><div class="goal-due">след. ср</div></div>
       <div class="goal"><div class="goal-check"></div><div class="goal-text">Протестировать все образцы AI очков</div><div class="goal-due">след. ср</div></div>
+      <div class="goals-note">Статичные · Попроси обновить</div>
     </div>
-    <div class="goals-note">Статичные · Попроси Claude обновить</div>
   </div>
   <!-- Col 4: Hermes news feed -->
   <div class="panel fi f4">
@@ -257,7 +289,7 @@ const TZ_ALIAS={
 'Europe/Moscow':'moscow','Europe/Simferopol':'moscow'
 };
 const BROWSER_TZ=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'UTC';
-const TZ_VER='6';
+const TZ_VER='7';
 if(localStorage.getItem('dz-ver')!==TZ_VER){localStorage.removeItem('dz');localStorage.removeItem('dz-manual');localStorage.setItem('dz-ver',TZ_VER)}
 function zoneByTz(tz){const hit=ZONES.find(z=>z.tz===tz);if(hit)return hit;const id=TZ_ALIAS[tz];return id?ZONES.find(z=>z.id===id):null}
 function ensureLocalZone(){
@@ -333,6 +365,65 @@ async function fetchHermes(){
 }
 
 
+
+// ── Personal OS · Reading layer ──
+let rdItems=[]; let rdTab=localStorage.getItem('pos-rd-tab')||'inbox';
+const ST_LABEL={inbox:'inbox',reading:'читаю',later:'later',done:'done'};
+function rdTime(iso){if(!iso)return '';const s=Math.floor((Date.now()-new Date(iso))/1000);if(s<3600)return Math.max(1,Math.floor(s/60))+'м';if(s<86400)return Math.floor(s/3600)+'ч';return Math.floor(s/86400)+'д'}
+function rdLocalQueue(){try{return JSON.parse(localStorage.getItem('pos-rd-local')||'[]')}catch(e){return []}}
+function rdSaveLocal(q){localStorage.setItem('pos-rd-local',JSON.stringify(q.slice(0,100)))}
+function rdMerged(){const map=new Map();rdItems.forEach(it=>{if(it&&it.url)map.set(it.url,it)});rdLocalQueue().forEach(it=>{if(it&&it.url&&!map.has(it.url))map.set(it.url,it)});return [...map.values()]}
+function rdRender(){
+  const body=document.getElementById('rdBody'); const goals=document.getElementById('goalsBody'); const add=document.getElementById('rdAddRow');
+  if(!body)return;
+  document.querySelectorAll('.rd-tab').forEach(t=>t.classList.toggle('on',t.dataset.rd===rdTab));
+  if(rdTab==='goals'){body.style.display='none';if(add)add.style.display='none';if(goals)goals.style.display='flex';return}
+  body.style.display='flex';if(add)add.style.display='flex';if(goals)goals.style.display='none';
+  const list=rdMerged().filter(it=>(it.status||'inbox')===rdTab);
+  if(!list.length){body.innerHTML='<div class="rd-empty">Пусто.<br>С телефона: Share → бот<br>или вставь URL ниже.</div>';return}
+  body.innerHTML=list.map(it=>{
+    const st=it.status||'inbox';
+    const title=(it.title||it.url||'').replace(/</g,'&lt;');
+    const href=it.url?`href="${it.url.replace(/"/g,'&quot;')}" target="_blank" rel="noopener"`:'';
+    const tags=(it.tags||[]).slice(0,3).map(t=>'#'+t).join(' ');
+    return `<a class="rd-item" ${href}><div class="rd-top"><span class="rd-st ${st}">${ST_LABEL[st]||st}</span><span class="rd-time">${rdTime(it.added_at)}</span></div><div class="rd-title">${title}</div><div class="rd-meta"><span>${it.source||''}</span><span>${tags}</span></div></a>`;
+  }).join('');
+}
+async function rdFetch(){
+  try{
+    const r=await fetch('reading.json?t='+Date.now());
+    if(!r.ok)throw new Error('no reading.json');
+    const d=await r.json();
+    rdItems=Array.isArray(d.items)?d.items:[];
+    if(d.updated){const el=document.getElementById('rdUpd');if(el)el.textContent=rdTime(d.updated)}
+  }catch(e){rdItems=[]}
+  rdRender();
+}
+function rdAddLocal(){
+  const inp=document.getElementById('rdUrl'); if(!inp)return;
+  let url=inp.value.trim(); if(!url)return;
+  if(!/^https?:\/\//i.test(url)) url='https://'+url;
+  const q=rdLocalQueue();
+  if(q.some(x=>x.url===url)||rdItems.some(x=>x.url===url)){inp.value='';rdTab='inbox';rdRender();return}
+  q.unshift({id:'local-'+Date.now(),title:url,url,source:'os-local',status:'inbox',tags:[],note:'',added_at:new Date().toISOString()});
+  rdSaveLocal(q); inp.value=''; rdTab='inbox'; localStorage.setItem('pos-rd-tab','inbox'); rdRender();
+}
+// share-target / query add: ?add=URL
+(function rdBootFromQuery(){
+  try{
+    const u=new URL(location.href); const add=u.searchParams.get('add')||u.searchParams.get('url');
+    if(!add)return;
+    const url=/^https?:\/\//i.test(add)?add:'https://'+add;
+    const q=rdLocalQueue();
+    if(!q.some(x=>x.url===url)){q.unshift({id:'share-'+Date.now(),title:url,url,source:'share',status:'inbox',tags:[],note:'',added_at:new Date().toISOString()});rdSaveLocal(q)}
+    u.searchParams.delete('add'); u.searchParams.delete('url'); history.replaceState({},'',u.pathname+u.search+(u.hash||''));
+  }catch(e){}
+})();
+document.querySelectorAll('.rd-tab').forEach(t=>t.addEventListener('click',()=>{rdTab=t.dataset.rd;localStorage.setItem('pos-rd-tab',rdTab);rdRender()}));
+const rdBtn=document.getElementById('rdAddBtn'); const rdInp=document.getElementById('rdUrl');
+if(rdBtn)rdBtn.onclick=rdAddLocal;
+if(rdInp)rdInp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();rdAddLocal()}});
+
 // ── Personal OS · Secretary bridge (remote Hermes api_server) ──
 // URL + token ONLY in localStorage — never commit secrets (GitHub Pages is public).
 const secEls={pulse:document.getElementById('secPulse'),status:document.getElementById('secStatus'),gear:document.getElementById('secGear'),cfg:document.getElementById('secCfg'),url:document.getElementById('secUrl'),token:document.getElementById('secToken'),save:document.getElementById('secSave'),in:document.getElementById('secIn'),send:document.getElementById('secSend'),reply:document.getElementById('secReply')};
@@ -345,7 +436,7 @@ function secShowReply(t){secEls.reply.textContent=t||'';secEls.reply.classList.a
 async function secSend(){const text=secEls.in.value.trim();if(!text)return;const c=secCfg();if(!c.url||!c.token){if(c.tg){window.open('https://t.me/'+c.tg.replace(/^@/,'')+'?text='+encodeURIComponent(text),'_blank');secEls.in.value='';return}secToggleCfg();secShowReply('Укажи HTTPS URL api_server секретаря и Bearer token.\nТокен только в этом браузере — репозиторий публичный.');return}secEls.send.disabled=true;secSetState('busy','думает…');try{const endpoint=c.url.endsWith('/v1/chat/completions')?c.url:(c.url+'/v1/chat/completions');const r=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+c.token},body:JSON.stringify({model:'hermes',messages:[{role:'user',content:text}],stream:false})});if(!r.ok){const body=await r.text().catch(()=>'');throw new Error('HTTP '+r.status+(body?' · '+body.slice(0,180):''))}const d=await r.json();const reply=d?.choices?.[0]?.message?.content||d?.message||JSON.stringify(d).slice(0,500);secShowReply(reply);secEls.in.value='';secSetState('on','online · API')}catch(e){secSetState('err','ошибка канала');secShowReply(String(e.message||e))}finally{secEls.send.disabled=false}}
 if(secEls.gear){secEls.gear.onclick=secToggleCfg;secEls.save.onclick=secSaveCfg;secEls.send.onclick=secSend;secEls.in.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();secSend()}});secRefreshStatus()}
 
-renderClocks();renderCur();updateClocks();setInterval(updateClocks,1000);setTimeout(()=>{fetchRates();fetchWeather();fetchHermes()},300);setInterval(fetchRates,5*60*1000);setInterval(fetchWeather,15*60*1000);setInterval(fetchHermes,10*60*1000);
+renderClocks();renderCur();updateClocks();setInterval(updateClocks,1000);setTimeout(()=>{fetchRates();fetchWeather();fetchHermes();rdFetch()},300);setInterval(fetchRates,5*60*1000);setInterval(fetchWeather,15*60*1000);setInterval(fetchHermes,10*60*1000);setInterval(rdFetch,10*60*1000);
 </script>
 </body>
 </html>

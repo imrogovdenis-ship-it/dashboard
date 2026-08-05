@@ -1,0 +1,32 @@
+{
+  "updated": "2026-08-05T02:23:59+00:00",
+  "version": 1,
+  "items": [
+    {
+      "id": "obsidian.md-abd3cec9",
+      "title": "Obsidian",
+      "url": "https://obsidian.md",
+      "source": "seed",
+      "status": "inbox",
+      "tags": [
+        "tools",
+        "notes"
+      ],
+      "note": "",
+      "added_at": "2026-08-05T02:23:59+00:00"
+    },
+    {
+      "id": "seed-hermes-docs",
+      "title": "Hermes Agent docs · Skills",
+      "url": "https://hermes-agent.nousresearch.com/docs/skills",
+      "source": "seed",
+      "status": "inbox",
+      "tags": [
+        "hermes",
+        "skills"
+      ],
+      "note": "",
+      "added_at": "2026-08-04T23:55:00+00:00"
+    }
+  ]
+}
