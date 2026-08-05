@@ -20,15 +20,6 @@
   "category_scores": {
     "ai": 1.5
   },
-  "votes": [
-    {
-      "url": "https://x.com/test/status/1",
-      "v": 1,
-      "title": "DeepSeek V4 Flash launch",
-      "source": "@deepseek_ai",
-      "category": "ai",
-      "at": "2026-08-05T06:12:24.824995+00:00"
-    }
-  ],
+  "votes": [],
   "hidden_urls": []
 }
