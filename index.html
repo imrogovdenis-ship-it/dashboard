@@ -104,7 +104,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);height:100v
 .goal-text{font-size:11px;font-weight:400;line-height:1.45;flex:1}
 .goal-due{font-family:var(--mono);font-size:8px;color:var(--orange);flex-shrink:0;margin-top:1px}
 .goals-note{font-size:6px;color:var(--gray);text-align:center;padding:4px 0 0;opacity:.5;font-style:italic}
-.rd-tabs{display:flex;gap:4px;margin-bottom:6px}
+.rd-tabs{display:flex;gap:4px;margin-bottom:6px;min-height:26px;align-items:center;flex-shrink:0}
 .rd-tab{font-family:var(--mono);font-size:7px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px;border:1px solid rgba(255,255,255,.08);color:var(--gray);cursor:pointer;background:transparent}
 .rd-tab.on{color:var(--accent);border-color:var(--accent-border);background:var(--accent-dim)}
 .rd-body{flex:1;display:flex;flex-direction:column;gap:4px;overflow-y:auto;min-height:0}
@@ -122,9 +122,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);height:100v
 .rd-title{font-size:11px;font-weight:500;line-height:1.35;color:var(--white)}
 .rd-meta{font-size:7px;color:var(--gray);display:flex;gap:6px;flex-wrap:wrap}
 .rd-empty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font-size:9px;color:var(--gray);line-height:1.5;padding:12px}
-.rd-add{display:flex;gap:5px;margin-top:6px;flex-shrink:0;width:100%;align-items:center}
-.rd-add input{flex:1;min-width:0;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:5px;color:var(--white);font-size:10px;padding:6px 8px;outline:none;font-family:var(--mono)}
-.rd-add button{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.5px;padding:6px 8px;border-radius:5px;border:1px solid var(--accent-border);background:var(--accent-dim);color:var(--accent);cursor:pointer;flex-shrink:0}
+/* .rd-add metrics unified with .nw-add below (Hermes section) */
 
 /* Hermes news feed */
 .hermes-body{flex:1;display:flex;flex-direction:column;gap:5px;overflow-y:auto;min-height:0;padding-right:3px}
@@ -139,35 +137,35 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);height:100v
 .news-cat.market{background:rgba(74,222,128,.15);color:var(--green)}
 .news-cat.tech{background:rgba(247,147,26,.15);color:var(--orange)}
 .news-time{font-family:var(--mono);font-size:7px;color:var(--gray);margin-left:auto;flex-shrink:0}
-/* unified body: one size, no title/desc split */
-.news-body{font-size:12px;font-weight:500;line-height:1.45;color:var(--white);display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
-.news-src{font-size:7px;color:var(--gray);opacity:.7;margin-top:2px}
+/* ONE text block — same size, no gray subtext */
+.news-body{font-size:12.5px;font-weight:500;line-height:1.42;color:var(--white);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.news-src{font-size:7px;color:var(--gray);opacity:.65;margin-top:1px}
 .hermes-head{display:flex;align-items:center;gap:5px}
 .hermes-pulse{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent-glow);animation:pulse 2s ease-in-out infinite;flex-shrink:0}
 .hermes-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
 .hermes-empty-icon{font-size:26px;opacity:.4}
 .hermes-empty-text{font-size:8px;color:var(--gray);line-height:1.6;max-width:160px}
 .news-row{display:flex;gap:6px;align-items:stretch;flex-shrink:0}
-.news-votes{display:flex;flex-direction:column;gap:3px;flex-shrink:0;padding-top:2px;width:22px}
-.nv{width:22px;height:22px;border-radius:5px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.25);color:var(--gray);font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.news-votes{display:flex;flex-direction:column;gap:2px;flex-shrink:0;padding-top:1px;width:22px}
+.nv{width:22px;height:20px;border-radius:5px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.25);color:var(--gray);font-size:11px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
 .nv:hover{border-color:var(--accent-border);color:var(--white)}
 .nv.on-up{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.45);color:var(--green)}
 .nv.on-dn{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.4);color:var(--red)}
-.news-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;padding:10px 12px;border-radius:8px;background:rgba(74,144,217,.04);border:1px solid rgba(74,144,217,.08);transition:var(--tr);cursor:pointer;text-decoration:none;color:inherit}
+.news-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;padding:8px 10px;border-radius:8px;background:rgba(74,144,217,.04);border:1px solid rgba(74,144,217,.08);transition:var(--tr);cursor:pointer;text-decoration:none;color:inherit}
 a.news-main:hover{background:rgba(74,144,217,.08);border-color:var(--accent-border);transform:translateX(2px)}
 .news-row.dim .news-main{opacity:.4}
-/* footer mirror of .rd-add — full panel width, same metrics */
-.nw-foot{display:flex;flex-direction:column;gap:5px;margin-top:6px;flex-shrink:0;width:100%}
-.nw-chips{display:flex;flex-wrap:wrap;gap:4px;max-height:40px;overflow-y:auto;min-height:0}
-.nw-chips:empty{display:none}
-.nw-chip{font-size:8px;font-family:var(--mono);color:var(--accent);background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:999px;padding:2px 7px;display:inline-flex;align-items:center;gap:4px}
+/* chips under header — same band as .rd-tabs so bottom inputs share Y */
+.nw-chips{display:flex;flex-wrap:wrap;gap:4px;min-height:26px;max-height:26px;overflow-x:auto;overflow-y:hidden;align-items:center;margin-bottom:6px;flex-shrink:0;scrollbar-width:none}
+.nw-chips::-webkit-scrollbar{display:none}
+.nw-chips:empty{/* keep height to align with reading tabs */}
+.nw-chip{font-size:8px;font-family:var(--mono);color:var(--accent);background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:999px;padding:2px 7px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0}
 .nw-chip button{border:0;background:transparent;color:var(--gray);cursor:pointer;font-size:10px;line-height:1;padding:0}
 .nw-chip button:hover{color:var(--red)}
-.nw-add{display:flex;gap:5px;width:100%;align-items:center}
-.nw-add input{flex:1;min-width:0;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:5px;color:var(--white);font-size:10px;padding:6px 8px;outline:none;font-family:var(--mono)}
-.nw-add button{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.5px;padding:6px 8px;border-radius:5px;border:1px solid var(--accent-border);background:var(--accent-dim);color:var(--accent);cursor:pointer;flex-shrink:0}
-.nw-sync{font-size:6px;color:var(--gray);opacity:.55;text-align:center;line-height:1.2;min-height:0}
-.nw-sync:empty{display:none}
+/* bottom inputs: identical metrics for reading + news */
+.rd-add,.nw-add{display:flex;gap:5px;margin-top:6px;flex-shrink:0;width:100%;align-items:center;min-height:32px}
+.rd-add input,.nw-add input{flex:1;min-width:0;height:32px;box-sizing:border-box;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:5px;color:var(--white);font-size:10px;padding:0 8px;outline:none;font-family:var(--mono)}
+.rd-add button,.nw-add button{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.5px;height:32px;padding:0 10px;border-radius:5px;border:1px solid var(--accent-border);background:var(--accent-dim);color:var(--accent);cursor:pointer;flex-shrink:0}
+.nw-sync{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
 /* Footer */
 .ftr{display:flex;justify-content:space-between;align-items:center;padding:3px 0 0;border-top:1px solid var(--border);margin-top:3px}
 .ftr-os{font-size:7px;color:var(--gray);letter-spacing:1px;text-transform:uppercase}
@@ -266,17 +264,15 @@ a.news-main:hover{background:rgba(74,144,217,.08);border-color:var(--accent-bord
   <!-- Col 4: Hermes news feed -->
   <div class="panel fi f4">
     <div class="ph"><div class="hermes-head"><div class="hermes-pulse"></div><span class="ph-title" style="color:var(--accent)">Лента Гермеса</span></div><span class="ph-hint" id="hermesUpd">—</span></div>
+    <div class="nw-chips" id="nwChips" title="темы поиска"></div>
     <div class="hermes-body" id="hermesBody">
       <div class="hermes-empty"><div class="hermes-empty-icon">📡</div><div class="hermes-empty-text">Ожидание данных от Гермеса...</div></div>
     </div>
-    <div class="nw-foot" id="nwFoot">
-      <div class="nw-chips" id="nwChips"></div>
-      <div class="nw-add">
-        <input id="nwKw" type="text" placeholder="тема / термин → в поиск" autocomplete="off" spellcheck="false">
-        <button type="button" id="nwAddBtn">+</button>
-      </div>
-      <div class="nw-sync" id="nwSync"></div>
+    <div class="nw-add" id="nwAddRow">
+      <input id="nwKw" type="text" placeholder="тема / термин → в поиск" autocomplete="off" spellcheck="false">
+      <button type="button" id="nwAddBtn">+</button>
     </div>
+    <div class="nw-sync" id="nwSync"></div>
   </div>
 </div>
 <div class="sec-dock" id="secDock">
@@ -316,7 +312,7 @@ const TZ_ALIAS={
 'Europe/Moscow':'moscow','Europe/Simferopol':'moscow'
 };
 const BROWSER_TZ=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'UTC';
-const TZ_VER='10';
+const TZ_VER='11';
 if(localStorage.getItem('dz-ver')!==TZ_VER){localStorage.removeItem('dz');localStorage.removeItem('dz-manual');localStorage.setItem('dz-ver',TZ_VER)}
 function zoneByTz(tz){const hit=ZONES.find(z=>z.tz===tz);if(hit)return hit;const id=TZ_ALIAS[tz];return id?ZONES.find(z=>z.id===id):null}
 function ensureLocalZone(){
@@ -450,28 +446,34 @@ function nwLearnVote(n,v){
   if(next!==0) nwPush({op:'vote',url,v:next,title:n.title||'',summary:n.summary||'',source:n.source||'',category:n.category||''});
 }
 function nwBodyText(n){
-  const title=String(n.title||'').trim();
-  let sum=String(n.summary||'').trim();
-  // drop summary if it only repeats the title
-  if(sum && title){
-    const t0=title.toLowerCase().replace(/\s+/g,' ');
-    const s0=sum.toLowerCase().replace(/\s+/g,' ');
-    if(s0===t0 || s0.startsWith(t0) && s0.length<title.length+12){sum=''}
-  }
+  const title=String(n.title||'').replace(/\s+/g,' ').trim();
+  let sum=String(n.summary||'').replace(/\s+/g,' ').trim();
+  // Always prefer the longer continuous text once — never title + summary as two blocks
   let raw='';
-  if(title && sum){
-    const head=sum.slice(0, Math.min(sum.length, title.length+8)).toLowerCase();
-    if(head.includes(title.slice(0, Math.min(24,title.length)).toLowerCase())) raw=sum;
+  if(sum && title){
+    const t=title.toLowerCase().replace(/\.+$/,'');
+    const s=sum.toLowerCase();
+    if(s.includes(t.slice(0, Math.min(28,t.length))) || s.startsWith(t.slice(0,20))) raw=sum;
     else raw=title.replace(/[.!?…]+$/,'')+'. '+sum;
   } else raw=sum||title;
   raw=raw.replace(/\s+/g,' ').trim();
   if(!raw) return '';
-  // first ~3 sentences
-  const parts=raw.split(/(?<=[.!?…])\s+/).map(s=>s.trim()).filter(Boolean);
-  let out=(parts.length?parts.slice(0,3):[raw]).join(' ');
-  // if still short, keep more of raw up to ~420 chars
-  if(out.length<120 && raw.length>out.length) out=raw.slice(0,420);
-  if(out.length>480){out=out.slice(0,477).replace(/\s+\S*$/,'')+'…'}
+  // normalize missing spaces after punctuation (…токены.Мы → …токены. Мы)
+  raw=raw.replace(/([.!?…])([А-ЯA-ZЁ])/g,'$1 $2');
+  let parts=raw.split(/(?<=[.!?…])\s+/).map(x=>x.trim()).filter(Boolean);
+  // drop near-duplicate consecutive sentences
+  const uniq=[];
+  parts.forEach(s=>{const k=s.toLowerCase().slice(0,40); if(!uniq.some(u=>u.toLowerCase().slice(0,40)===k)) uniq.push(s)});
+  parts=uniq;
+  let out=parts.slice(0,3).join(' ');
+  if(!out) out=raw;
+  // compact card: ~280–340 chars max
+  if(out.length>340){
+    out=out.slice(0,337);
+    const cut=Math.max(out.lastIndexOf('. '), out.lastIndexOf(' '));
+    out=(cut>120?out.slice(0,cut+(out[cut]==='.'?1:0)):out).trim();
+    if(!/[.!?…]$/.test(out)) out+='…';
+  }
   return out;
 }
 function nwRender(){
