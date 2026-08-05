@@ -148,6 +148,24 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);height:100v
 .hermes-empty-icon{font-size:26px;opacity:.4}
 .hermes-empty-text{font-size:8px;color:var(--gray);line-height:1.6;max-width:160px}
 .hermes-note{font-size:6px;color:var(--gray);text-align:center;padding:4px 0 0;opacity:.5;font-style:italic}
+.news-row{display:flex;gap:6px;align-items:stretch;flex-shrink:0}
+.news-votes{display:flex;flex-direction:column;gap:3px;flex-shrink:0;padding-top:2px}
+.nv{width:22px;height:22px;border-radius:5px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.25);color:var(--gray);font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.nv:hover{border-color:var(--accent-border);color:var(--white)}
+.nv.on-up{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.45);color:var(--green)}
+.nv.on-dn{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.4);color:var(--red)}
+.news-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:8px;background:rgba(74,144,217,.04);border:1px solid rgba(74,144,217,.08);transition:var(--tr);cursor:pointer;text-decoration:none;color:inherit}
+a.news-main:hover{background:rgba(74,144,217,.08);border-color:var(--accent-border);transform:translateX(2px)}
+.news-row.dim .news-main{opacity:.4}
+.nw-kw{display:flex;flex-direction:column;gap:5px;margin-top:6px;flex-shrink:0}
+.nw-chips{display:flex;flex-wrap:wrap;gap:4px;max-height:46px;overflow-y:auto}
+.nw-chip{font-size:8px;font-family:var(--mono);color:var(--accent);background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:999px;padding:2px 7px;display:inline-flex;align-items:center;gap:4px}
+.nw-chip button{border:0;background:transparent;color:var(--gray);cursor:pointer;font-size:10px;line-height:1;padding:0}
+.nw-chip button:hover{color:var(--red)}
+.nw-add{display:flex;gap:5px}
+.nw-add input{flex:1;min-width:0;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:5px;color:var(--white);font-size:10px;padding:6px 8px;outline:none;font-family:var(--mono)}
+.nw-add button{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.5px;padding:6px 8px;border-radius:5px;border:1px solid var(--accent-border);background:var(--accent-dim);color:var(--accent);cursor:pointer;flex-shrink:0}
+.nw-sync{font-size:6px;color:var(--gray);opacity:.65;text-align:center;min-height:10px}
 /* Footer */
 .ftr{display:flex;justify-content:space-between;align-items:center;padding:3px 0 0;border-top:1px solid var(--border);margin-top:3px}
 .ftr-os{font-size:7px;color:var(--gray);letter-spacing:1px;text-transform:uppercase}
@@ -249,7 +267,15 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);height:100v
     <div class="hermes-body" id="hermesBody">
       <div class="hermes-empty"><div class="hermes-empty-icon">📡</div><div class="hermes-empty-text">Ожидание данных от Гермеса...</div></div>
     </div>
-    <div class="hermes-note" id="hermesNote">news.json</div>
+    <div class="nw-kw">
+      <div class="nw-chips" id="nwChips"></div>
+      <div class="nw-add">
+        <input id="nwKw" type="text" placeholder="тема / термин → в поиск" autocomplete="off" spellcheck="false">
+        <button type="button" id="nwAddBtn">+</button>
+      </div>
+      <div class="nw-sync" id="nwSync"></div>
+    </div>
+    <div class="hermes-note" id="hermesNote">news.json · +/− обучает ленту</div>
   </div>
 </div>
 <div class="sec-dock" id="secDock">
@@ -289,7 +315,7 @@ const TZ_ALIAS={
 'Europe/Moscow':'moscow','Europe/Simferopol':'moscow'
 };
 const BROWSER_TZ=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'UTC';
-const TZ_VER='7';
+const TZ_VER='8';
 if(localStorage.getItem('dz-ver')!==TZ_VER){localStorage.removeItem('dz');localStorage.removeItem('dz-manual');localStorage.setItem('dz-ver',TZ_VER)}
 function zoneByTz(tz){const hit=ZONES.find(z=>z.tz===tz);if(hit)return hit;const id=TZ_ALIAS[tz];return id?ZONES.find(z=>z.id===id):null}
 function ensureLocalZone(){
@@ -335,35 +361,168 @@ async function fetchRates(){try{const r=await fetch('https://open.er-api.com/v6/
 try{const ids=CRYPTO.map(c=>c.id).join(',');const r=await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`);const d=await r.json();CRYPTO.forEach(c=>{if(d[c.id]){setR(c.id,d[c.id].usd,d[c.id].usd<1?4:d[c.id].usd<100?2:0);setCT(c.id,d[c.id].usd_24h_change||0)}})}catch(e){}
 document.getElementById('updTime').textContent='UPD '+new Intl.DateTimeFormat('ru',{timeZone:HOME,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date())}
 async function fetchWeather(){const az=ZONES.find(z=>z.id===aId)||ensureLocalZone();if(az.lat==null||az.lon==null){await new Promise(res=>{if(!navigator.geolocation){az.lat=13.76;az.lon=100.50;res();return}navigator.geolocation.getCurrentPosition(p=>{az.lat=p.coords.latitude;az.lon=p.coords.longitude;res()},()=>{az.lat=13.76;az.lon=100.50;res()},{timeout:5000,maximumAge:6e5})})}document.getElementById('wxCity').textContent=az.flag+' '+az.label;try{const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${az.lat}&longitude=${az.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=4&timezone=${encodeURIComponent(az.tz||'auto')}`);const d=await r.json();if(d?.current){const c=d.current,wmo=WMO[c.weather_code]||['🌤','—'];document.getElementById('wxIcon').textContent=wmo[0];document.getElementById('wxTemp').textContent=Math.round(c.temperature_2m)+'°C';document.getElementById('wxTemp').classList.remove('ld');document.getElementById('wxDesc').textContent=wmo[1];document.getElementById('wxFeel').textContent=Math.round(c.apparent_temperature)+'°C';document.getElementById('wxHum').textContent=c.relative_humidity_2m+'%';document.getElementById('wxWind').textContent=Math.round(c.wind_speed_10m)+' км/ч'}const fc=document.getElementById('wxForecast');if(fc&&d?.daily?.time?.length){const days=d.daily;let html='<div class="wx-fc-title">3 дня · '+az.label+'</div>';const n=Math.min(3,days.time.length);for(let i=0;i<n;i++){const dt=new Date(days.time[i]+'T12:00:00');const day=new Intl.DateTimeFormat('ru',{timeZone:az.tz||HOME,weekday:'short'}).format(dt);const code=days.weather_code[i];const w=WMO[code]||['🌤','—'];const tmax=Math.round(days.temperature_2m_max[i]);const tmin=Math.round(days.temperature_2m_min[i]);html+=`<div class="wx-fc-row"><span class="wx-fc-day">${day}</span><span class="wx-fc-ico">${w[0]}</span><span class="wx-fc-t">${tmax}°<span>/${tmin}°</span></span></div>`}fc.innerHTML=html}}catch(e){}}
-// ── Hermes news feed ──
+// ── Hermes news feed + preference learning ──
 const CAT_LABELS={ai:'AI',biz:'Бизнес',market:'Рынки',tech:'Tech'};
+const NW_SYNC='https://ai-class.tech/api/news-prefs';
+const NW_KEY=(localStorage.getItem('pos-news-key')||'').trim();
+const NW_LS='pos-news-prefs-v1';
+function nwDefault(){return{keywords:[],term_scores:{},source_scores:{},category_scores:{},votes:[],hidden_urls:[],url_votes:{}}}
+function nwLoad(){try{const d=JSON.parse(localStorage.getItem(NW_LS)||'null');if(d&&typeof d==='object'){d.keywords=d.keywords||[];d.term_scores=d.term_scores||{};d.source_scores=d.source_scores||{};d.category_scores=d.category_scores||{};d.votes=d.votes||[];d.hidden_urls=d.hidden_urls||[];d.url_votes=d.url_votes||{};return d}}catch(e){}return nwDefault()}
+function nwSave(p){localStorage.setItem(NW_LS,JSON.stringify(p));nwRenderKw()}
+let nwPrefs=nwLoad();
+let nwItems=[];
 function timeAgo(iso){const d=new Date(iso),now=new Date(),s=Math.floor((now-d)/1000);
 if(s<60)return 'только что';if(s<3600)return Math.floor(s/60)+' мин';if(s<86400)return Math.floor(s/3600)+' ч';return Math.floor(s/86400)+' д'}
+function nwEsc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function nwTok(t){return String(t||'').toLowerCase().replace(/ё/g,'е').match(/[a-zа-я0-9][a-zа-я0-9+.#-]{2,}/g)||[]}
+function nwScoreItem(n){
+  const p=nwPrefs; let s=0; const text=((n.title||'')+' '+(n.summary||'')+' '+(n.source||'')).toLowerCase().replace(/ё/g,'е');
+  (p.keywords||[]).forEach(k=>{if(k&&text.includes(String(k).toLowerCase().replace(/ё/g,'е')))s+=50});
+  nwTok(text).forEach(tok=>{const w=p.term_scores[tok]; if(w)s+=Number(w)*3});
+  if(n.source&&p.source_scores[n.source])s+=Number(p.source_scores[n.source])*5;
+  if(n.category&&p.category_scores[n.category])s+=Number(p.category_scores[n.category])*2;
+  const uv=(p.url_votes||{})[n.url||n.id||'']; if(uv===1)s+=30; if(uv===-1)s-=80;
+  if((p.hidden_urls||[]).includes(n.url))s-=200;
+  if(typeof n.score==='number')s+=n.score*0.01;
+  return s;
+}
+function nwSorted(items){
+  return items.map((n,i)=>({n,i,s:nwScoreItem(n)})).sort((a,b)=>b.s-a.s||a.i-b.i).map(x=>x.n)
+}
+function nwSetSync(msg){const el=document.getElementById('nwSync'); if(el)el.textContent=msg||''}
+async function nwPush(payload){
+  if(!NW_KEY){nwSetSync('нужен ключ sync (localStorage pos-news-key)');return false}
+  try{
+    const r=await fetch(NW_SYNC,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+NW_KEY,'X-News-Prefs-Key':NW_KEY},body:JSON.stringify(Object.assign({push:true},payload))});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok||d.ok===false){nwSetSync('sync: '+(d.error||r.status));return false}
+    nwSetSync('sync ok · обучение на сервере');
+    return true;
+  }catch(e){nwSetSync('local only · API offline');return false}
+}
+function nwRenderKw(){
+  const box=document.getElementById('nwChips'); if(!box)return;
+  const kws=nwPrefs.keywords||[];
+  if(!kws.length){box.innerHTML='';return}
+  box.innerHTML=kws.map(k=>`<span class="nw-chip">${nwEsc(k)}<button type="button" data-kw="${nwEsc(k)}" title="убрать">×</button></span>`).join('');
+  box.querySelectorAll('button[data-kw]').forEach(b=>b.onclick=()=>nwDelKw(b.getAttribute('data-kw')));
+}
+function nwAddKw(){
+  const inp=document.getElementById('nwKw'); if(!inp)return;
+  let k=(inp.value||'').trim().replace(/ё/g,'е'); if(!k)return;
+  if(k.length>64)k=k.slice(0,64);
+  const low=new Set((nwPrefs.keywords||[]).map(x=>String(x).toLowerCase()));
+  if(!low.has(k.toLowerCase())){nwPrefs.keywords=(nwPrefs.keywords||[]).concat([k]).slice(0,80); nwSave(nwPrefs)}
+  inp.value='';
+  nwRender();
+  nwPush({op:'keyword_add',keyword:k});
+}
+function nwDelKw(k){
+  nwPrefs.keywords=(nwPrefs.keywords||[]).filter(x=>String(x).toLowerCase()!==String(k).toLowerCase());
+  nwSave(nwPrefs); nwRender();
+  nwPush({op:'keyword_del',keyword:k});
+}
+function nwLearnVote(n,v){
+  const url=n.url||n.id||'';
+  nwPrefs.url_votes=nwPrefs.url_votes||{};
+  const prev=nwPrefs.url_votes[url]||0;
+  const next=(prev===v)?0:v; // toggle
+  if(next===0) delete nwPrefs.url_votes[url]; else nwPrefs.url_votes[url]=next;
+  // term/source learning
+  const delta=next===0? -prev : (prev===0? next : next-prev);
+  if(delta){
+    nwPrefs.source_scores=nwPrefs.source_scores||{};
+    nwPrefs.category_scores=nwPrefs.category_scores||{};
+    nwPrefs.term_scores=nwPrefs.term_scores||{};
+    nwPrefs.hidden_urls=nwPrefs.hidden_urls||[];
+    if(n.source){nwPrefs.source_scores[n.source]=(Number(nwPrefs.source_scores[n.source]||0)+3*delta); if(Math.abs(nwPrefs.source_scores[n.source])<0.5)delete nwPrefs.source_scores[n.source]}
+    if(n.category){nwPrefs.category_scores[n.category]=(Number(nwPrefs.category_scores[n.category]||0)+1.5*delta); if(Math.abs(nwPrefs.category_scores[n.category])<0.5)delete nwPrefs.category_scores[n.category]}
+    nwTok((n.title||'')+' '+(n.summary||'')).slice(0,20).forEach(tok=>{nwPrefs.term_scores[tok]=Number(nwPrefs.term_scores[tok]||0)+1*delta; if(Math.abs(nwPrefs.term_scores[tok])<0.5)delete nwPrefs.term_scores[tok]});
+    if(next<0&&url){if(!nwPrefs.hidden_urls.includes(url))nwPrefs.hidden_urls.push(url); nwPrefs.hidden_urls=nwPrefs.hidden_urls.slice(-200)}
+    if(next>=0&&url) nwPrefs.hidden_urls=nwPrefs.hidden_urls.filter(u=>u!==url);
+    nwPrefs.votes=(nwPrefs.votes||[]).concat([{url,v:next||v,title:(n.title||'').slice(0,120),source:n.source||'',category:n.category||'',at:new Date().toISOString()}]).slice(-300);
+  }
+  nwSave(nwPrefs);
+  nwRender();
+  if(next!==0) nwPush({op:'vote',url,v:next,title:n.title||'',summary:n.summary||'',source:n.source||'',category:n.category||''});
+}
+function nwRender(){
+  const body=document.getElementById('hermesBody'); if(!body)return;
+  if(!nwItems.length){body.innerHTML='<div class="hermes-empty"><div class="hermes-empty-icon">📭</div><div class="hermes-empty-text">Лента пуста</div></div>';return}
+  const items=nwSorted(nwItems).filter(n=>{
+    const uv=(nwPrefs.url_votes||{})[n.url||n.id||''];
+    if(uv===-1) return true; // keep visible but dimmed so user can undo
+    return true;
+  });
+  let html='';
+  items.forEach((n,idx)=>{
+    const cat=n.category||'ai';
+    const catLabel=CAT_LABELS[cat]||cat;
+    const time=n.date?timeAgo(n.date):'';
+    const url=n.url||'';
+    const uv=(nwPrefs.url_votes||{})[url||n.id||'']||0;
+    const dim=uv===-1?' dim':'';
+    const tag=url?'a':'div';
+    const href=url?` href="${nwEsc(url)}" target="_blank" rel="noopener"`:'';
+    html+=`<div class="news-row${dim}" data-i="${idx}">
+      <div class="news-votes">
+        <button type="button" class="nv ${uv===1?'on-up':''}" data-v="1" title="больше такого">+</button>
+        <button type="button" class="nv ${uv===-1?'on-dn':''}" data-v="-1" title="меньше такого">−</button>
+      </div>
+      <${tag} class="news-main"${href}>
+        <div class="news-top"><span class="news-cat ${nwEsc(cat)}">${nwEsc(catLabel)}</span><span class="news-time">${nwEsc(time)}</span></div>
+        <div class="news-title">${nwEsc(n.title||'')}</div>
+        ${n.summary?`<div class="news-desc">${nwEsc(n.summary)}</div>`:''}
+        ${n.source?`<div class="news-src">${nwEsc(n.source)}</div>`:''}
+      </${tag}>
+    </div>`;
+  });
+  body.innerHTML=html;
+  // map sorted items for vote handlers
+  const sorted=items;
+  body.querySelectorAll('.news-row').forEach(row=>{
+    const i=Number(row.getAttribute('data-i'));
+    const item=sorted[i];
+    row.querySelectorAll('.nv').forEach(btn=>{
+      btn.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();nwLearnVote(item,Number(btn.getAttribute('data-v')))});
+    });
+  });
+}
 async function fetchHermes(){
   const body=document.getElementById('hermesBody');
   try{
-    // Cache-bust to always get fresh news.json
     const r=await fetch('news.json?t='+Date.now());
     if(!r.ok)throw new Error('no file');
     const d=await r.json();
-    if(!d.items||!d.items.length){body.innerHTML='<div class="hermes-empty"><div class="hermes-empty-icon">📭</div><div class="hermes-empty-text">Лента пуста</div></div>';return}
-    let html='';
-    d.items.forEach(n=>{
-      const cat=n.category||'ai';
-      const catLabel=CAT_LABELS[cat]||cat;
-      const time=n.date?timeAgo(n.date):'';
-      const tag=n.url?'a':'div';
-      const href=n.url?` href="${n.url}" target="_blank"`:'';
-      html+=`<${tag} class="news"${href}><div class="news-top"><span class="news-cat ${cat}">${catLabel}</span><span class="news-time">${time}</span></div><div class="news-title">${n.title||''}</div>${n.summary?`<div class="news-desc">${n.summary}</div>`:''}${n.source?`<div class="news-src">${n.source}</div>`:''}</${tag}>`;
-    });
-    body.innerHTML=html;
+    nwItems=Array.isArray(d.items)?d.items:[];
+    if(!nwItems.length){body.innerHTML='<div class="hermes-empty"><div class="hermes-empty-icon">📭</div><div class="hermes-empty-text">Лента пуста</div></div>';return}
+    nwRender();
     if(d.updated){document.getElementById('hermesUpd').textContent=timeAgo(d.updated);}
-    document.getElementById('hermesNote').textContent='Обновлено Гермесом';
+    const k=nwPrefs.keywords||[];
+    document.getElementById('hermesNote').textContent=k.length?(`обучение · ${k.length} тем`):'news.json · +/− обучает ленту';
   }catch(e){
     body.innerHTML='<div class="hermes-empty"><div class="hermes-empty-icon">📡</div><div class="hermes-empty-text">news.json не найден.<br>Гермес ещё не публиковал ленту.</div></div>';
   }
 }
-
+// keyword UI bind
+(function(){
+  const btn=document.getElementById('nwAddBtn'); const inp=document.getElementById('nwKw');
+  if(btn)btn.onclick=nwAddKw;
+  if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();nwAddKw()}});
+  nwRenderKw();
+  // pull server prefs once (merge keywords)
+  fetch(NW_SYNC,{headers:{'Authorization':'Bearer '+NW_KEY,'X-News-Prefs-Key':NW_KEY}}).then(r=>r.ok?r.json():null).then(d=>{
+    if(!d||!d.ok||!d.prefs)return;
+    const sk=d.prefs.keywords||[];
+    const low=new Set((nwPrefs.keywords||[]).map(x=>String(x).toLowerCase()));
+    let changed=false;
+    sk.forEach(k=>{const s=String(k||'').trim(); if(s&&!low.has(s.toLowerCase())){nwPrefs.keywords.push(s);low.add(s.toLowerCase());changed=true}});
+    // merge term/source lightly if local empty-ish
+    if(Object.keys(nwPrefs.term_scores||{}).length<3 && d.prefs.term_scores){nwPrefs.term_scores=Object.assign({},d.prefs.term_scores,nwPrefs.term_scores);changed=true}
+    if(Object.keys(nwPrefs.source_scores||{}).length<2 && d.prefs.source_scores){nwPrefs.source_scores=Object.assign({},d.prefs.source_scores,nwPrefs.source_scores);changed=true}
+    if(changed){nwSave(nwPrefs);nwRender()}
+  }).catch(()=>{});
+})();
 
 
 // ── Personal OS · Reading layer ──
