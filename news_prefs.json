@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-05T06:13:43.869251+00:00",
+  "updated": "2026-08-05T06:21:27.867975+00:00",
   "keywords": [
     "jetson",
     "hermes agent",
@@ -12,14 +12,30 @@
     "launch": 1.0,
     "new": 1.0,
     "reasoning": 1.0,
-    "model": 1.0
+    "model": 1.0,
+    "биткойн": -2.0,
+    "t.co": -2.0,
+    "cxlwqiz7vr": -2.0
   },
   "source_scores": {
-    "@deepseek_ai": 3.0
+    "@deepseek_ai": 3.0,
+    "@Bitcoin": -3.0
   },
   "category_scores": {
-    "ai": 1.5
+    "ai": 1.5,
+    "market": -1.5
   },
-  "votes": [],
-  "hidden_urls": []
+  "votes": [
+    {
+      "url": "https://x.com/Bitcoin/status/2084802739272638777",
+      "v": -1,
+      "title": "$64 005,52\n\n#Биткойн https://t.co/cxLWQIZ7Vr",
+      "source": "@Bitcoin",
+      "category": "market",
+      "at": "2026-08-05T06:21:27.867938+00:00"
+    }
+  ],
+  "hidden_urls": [
+    "https://x.com/Bitcoin/status/2084802739272638777"
+  ]
 }
