@@ -364,7 +364,9 @@ async function fetchWeather(){const az=ZONES.find(z=>z.id===aId)||ensureLocalZon
 // ── Hermes news feed + preference learning ──
 const CAT_LABELS={ai:'AI',biz:'Бизнес',market:'Рынки',tech:'Tech'};
 const NW_SYNC='https://ai-class.tech/api/news-prefs';
-const NW_KEY=(localStorage.getItem('pos-news-key')||'').trim();
+// one-shot install sync key: ?newskey=... or #newskey=...
+(function(){try{const u=new URL(location.href);let k=(u.searchParams.get('newskey')||'').trim();if(!k&&location.hash){const m=location.hash.match(/newskey=([^&]+)/i);if(m)k=decodeURIComponent(m[1])}if(k&&k.length>=16){localStorage.setItem('pos-news-key',k);u.searchParams.delete('newskey');const h=location.hash.replace(/#?newskey=[^&]+&?/i,'').replace(/^#&/,'#').replace(/^#$/,'');history.replaceState(null,'',u.pathname+u.search+(h&&h!=='#'?h:''))}}catch(e){}})();
+let NW_KEY=(localStorage.getItem('pos-news-key')||'').trim();
 const NW_LS='pos-news-prefs-v1';
 function nwDefault(){return{keywords:[],term_scores:{},source_scores:{},category_scores:{},votes:[],hidden_urls:[],url_votes:{}}}
 function nwLoad(){try{const d=JSON.parse(localStorage.getItem(NW_LS)||'null');if(d&&typeof d==='object'){d.keywords=d.keywords||[];d.term_scores=d.term_scores||{};d.source_scores=d.source_scores||{};d.category_scores=d.category_scores||{};d.votes=d.votes||[];d.hidden_urls=d.hidden_urls||[];d.url_votes=d.url_votes||{};return d}}catch(e){}return nwDefault()}
