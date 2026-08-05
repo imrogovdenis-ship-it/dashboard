@@ -122,12 +122,12 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);height:100v
 .rd-title{font-size:11px;font-weight:500;line-height:1.35;color:var(--white)}
 .rd-meta{font-size:7px;color:var(--gray);display:flex;gap:6px;flex-wrap:wrap}
 .rd-empty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font-size:9px;color:var(--gray);line-height:1.5;padding:12px}
-.rd-add{display:flex;gap:5px;margin-top:6px;flex-shrink:0}
+.rd-add{display:flex;gap:5px;margin-top:6px;flex-shrink:0;width:100%;align-items:center}
 .rd-add input{flex:1;min-width:0;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:5px;color:var(--white);font-size:10px;padding:6px 8px;outline:none;font-family:var(--mono)}
 .rd-add button{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.5px;padding:6px 8px;border-radius:5px;border:1px solid var(--accent-border);background:var(--accent-dim);color:var(--accent);cursor:pointer;flex-shrink:0}
 
 /* Hermes news feed */
-.hermes-body{flex:1;display:flex;flex-direction:column;gap:5px;overflow-y:auto;padding-right:3px}
+.hermes-body{flex:1;display:flex;flex-direction:column;gap:5px;overflow-y:auto;min-height:0;padding-right:3px}
 .hermes-body::-webkit-scrollbar{width:3px}
 .hermes-body::-webkit-scrollbar-thumb{background:rgba(74,144,217,.2);border-radius:3px}
 .news{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:8px;background:rgba(74,144,217,.04);border:1px solid rgba(74,144,217,.08);transition:var(--tr);flex-shrink:0;cursor:pointer;text-decoration:none}
@@ -139,33 +139,35 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);height:100v
 .news-cat.market{background:rgba(74,222,128,.15);color:var(--green)}
 .news-cat.tech{background:rgba(247,147,26,.15);color:var(--orange)}
 .news-time{font-family:var(--mono);font-size:7px;color:var(--gray);margin-left:auto;flex-shrink:0}
-.news-title{font-size:12px;font-weight:500;line-height:1.4;color:var(--white)}
-.news-desc{font-size:9px;color:var(--gray-light);line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.news-src{font-size:7px;color:var(--gray);opacity:.7;margin-top:1px}
+/* unified body: one size, no title/desc split */
+.news-body{font-size:12px;font-weight:500;line-height:1.45;color:var(--white);display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+.news-src{font-size:7px;color:var(--gray);opacity:.7;margin-top:2px}
 .hermes-head{display:flex;align-items:center;gap:5px}
 .hermes-pulse{width:5px;height:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent-glow);animation:pulse 2s ease-in-out infinite;flex-shrink:0}
 .hermes-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
 .hermes-empty-icon{font-size:26px;opacity:.4}
 .hermes-empty-text{font-size:8px;color:var(--gray);line-height:1.6;max-width:160px}
-.hermes-note{font-size:6px;color:var(--gray);text-align:center;padding:4px 0 0;opacity:.5;font-style:italic}
 .news-row{display:flex;gap:6px;align-items:stretch;flex-shrink:0}
-.news-votes{display:flex;flex-direction:column;gap:3px;flex-shrink:0;padding-top:2px}
+.news-votes{display:flex;flex-direction:column;gap:3px;flex-shrink:0;padding-top:2px;width:22px}
 .nv{width:22px;height:22px;border-radius:5px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.25);color:var(--gray);font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
 .nv:hover{border-color:var(--accent-border);color:var(--white)}
 .nv.on-up{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.45);color:var(--green)}
 .nv.on-dn{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.4);color:var(--red)}
-.news-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:8px;background:rgba(74,144,217,.04);border:1px solid rgba(74,144,217,.08);transition:var(--tr);cursor:pointer;text-decoration:none;color:inherit}
+.news-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;padding:10px 12px;border-radius:8px;background:rgba(74,144,217,.04);border:1px solid rgba(74,144,217,.08);transition:var(--tr);cursor:pointer;text-decoration:none;color:inherit}
 a.news-main:hover{background:rgba(74,144,217,.08);border-color:var(--accent-border);transform:translateX(2px)}
 .news-row.dim .news-main{opacity:.4}
-.nw-kw{display:flex;flex-direction:column;gap:5px;margin-top:6px;flex-shrink:0}
-.nw-chips{display:flex;flex-wrap:wrap;gap:4px;max-height:46px;overflow-y:auto}
+/* footer mirror of .rd-add — full panel width, same metrics */
+.nw-foot{display:flex;flex-direction:column;gap:5px;margin-top:6px;flex-shrink:0;width:100%}
+.nw-chips{display:flex;flex-wrap:wrap;gap:4px;max-height:40px;overflow-y:auto;min-height:0}
+.nw-chips:empty{display:none}
 .nw-chip{font-size:8px;font-family:var(--mono);color:var(--accent);background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:999px;padding:2px 7px;display:inline-flex;align-items:center;gap:4px}
 .nw-chip button{border:0;background:transparent;color:var(--gray);cursor:pointer;font-size:10px;line-height:1;padding:0}
 .nw-chip button:hover{color:var(--red)}
-.nw-add{display:flex;gap:5px}
+.nw-add{display:flex;gap:5px;width:100%;align-items:center}
 .nw-add input{flex:1;min-width:0;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:5px;color:var(--white);font-size:10px;padding:6px 8px;outline:none;font-family:var(--mono)}
 .nw-add button{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.5px;padding:6px 8px;border-radius:5px;border:1px solid var(--accent-border);background:var(--accent-dim);color:var(--accent);cursor:pointer;flex-shrink:0}
-.nw-sync{font-size:6px;color:var(--gray);opacity:.65;text-align:center;min-height:10px}
+.nw-sync{font-size:6px;color:var(--gray);opacity:.55;text-align:center;line-height:1.2;min-height:0}
+.nw-sync:empty{display:none}
 /* Footer */
 .ftr{display:flex;justify-content:space-between;align-items:center;padding:3px 0 0;border-top:1px solid var(--border);margin-top:3px}
 .ftr-os{font-size:7px;color:var(--gray);letter-spacing:1px;text-transform:uppercase}
@@ -267,7 +269,7 @@ a.news-main:hover{background:rgba(74,144,217,.08);border-color:var(--accent-bord
     <div class="hermes-body" id="hermesBody">
       <div class="hermes-empty"><div class="hermes-empty-icon">📡</div><div class="hermes-empty-text">Ожидание данных от Гермеса...</div></div>
     </div>
-    <div class="nw-kw">
+    <div class="nw-foot" id="nwFoot">
       <div class="nw-chips" id="nwChips"></div>
       <div class="nw-add">
         <input id="nwKw" type="text" placeholder="тема / термин → в поиск" autocomplete="off" spellcheck="false">
@@ -275,7 +277,6 @@ a.news-main:hover{background:rgba(74,144,217,.08);border-color:var(--accent-bord
       </div>
       <div class="nw-sync" id="nwSync"></div>
     </div>
-    <div class="hermes-note" id="hermesNote">news.json · +/− обучает ленту</div>
   </div>
 </div>
 <div class="sec-dock" id="secDock">
@@ -315,7 +316,7 @@ const TZ_ALIAS={
 'Europe/Moscow':'moscow','Europe/Simferopol':'moscow'
 };
 const BROWSER_TZ=(Intl.DateTimeFormat().resolvedOptions().timeZone)||'UTC';
-const TZ_VER='9';
+const TZ_VER='10';
 if(localStorage.getItem('dz-ver')!==TZ_VER){localStorage.removeItem('dz');localStorage.removeItem('dz-manual');localStorage.setItem('dz-ver',TZ_VER)}
 function zoneByTz(tz){const hit=ZONES.find(z=>z.tz===tz);if(hit)return hit;const id=TZ_ALIAS[tz];return id?ZONES.find(z=>z.id===id):null}
 function ensureLocalZone(){
@@ -448,6 +449,31 @@ function nwLearnVote(n,v){
   nwRender();
   if(next!==0) nwPush({op:'vote',url,v:next,title:n.title||'',summary:n.summary||'',source:n.source||'',category:n.category||''});
 }
+function nwBodyText(n){
+  const title=String(n.title||'').trim();
+  let sum=String(n.summary||'').trim();
+  // drop summary if it only repeats the title
+  if(sum && title){
+    const t0=title.toLowerCase().replace(/\s+/g,' ');
+    const s0=sum.toLowerCase().replace(/\s+/g,' ');
+    if(s0===t0 || s0.startsWith(t0) && s0.length<title.length+12){sum=''}
+  }
+  let raw='';
+  if(title && sum){
+    const head=sum.slice(0, Math.min(sum.length, title.length+8)).toLowerCase();
+    if(head.includes(title.slice(0, Math.min(24,title.length)).toLowerCase())) raw=sum;
+    else raw=title.replace(/[.!?…]+$/,'')+'. '+sum;
+  } else raw=sum||title;
+  raw=raw.replace(/\s+/g,' ').trim();
+  if(!raw) return '';
+  // first ~3 sentences
+  const parts=raw.split(/(?<=[.!?…])\s+/).map(s=>s.trim()).filter(Boolean);
+  let out=(parts.length?parts.slice(0,3):[raw]).join(' ');
+  // if still short, keep more of raw up to ~420 chars
+  if(out.length<120 && raw.length>out.length) out=raw.slice(0,420);
+  if(out.length>480){out=out.slice(0,477).replace(/\s+\S*$/,'')+'…'}
+  return out;
+}
 function nwRender(){
   const body=document.getElementById('hermesBody'); if(!body)return;
   if(!nwItems.length){body.innerHTML='<div class="hermes-empty"><div class="hermes-empty-icon">📭</div><div class="hermes-empty-text">Лента пуста</div></div>';return}
@@ -473,8 +499,7 @@ function nwRender(){
       </div>
       <${tag} class="news-main"${href}>
         <div class="news-top"><span class="news-cat ${nwEsc(cat)}">${nwEsc(catLabel)}</span><span class="news-time">${nwEsc(time)}</span></div>
-        <div class="news-title">${nwEsc(n.title||'')}</div>
-        ${n.summary?`<div class="news-desc">${nwEsc(n.summary)}</div>`:''}
+        <div class="news-body">${nwEsc(nwBodyText(n))}</div>
         ${n.source?`<div class="news-src">${nwEsc(n.source)}</div>`:''}
       </${tag}>
     </div>`;
@@ -501,7 +526,7 @@ async function fetchHermes(){
     nwRender();
     if(d.updated){document.getElementById('hermesUpd').textContent=timeAgo(d.updated);}
     const k=nwPrefs.keywords||[];
-    document.getElementById('hermesNote').textContent=k.length?(`обучение · ${k.length} тем`):'news.json · +/− обучает ленту';
+    const hn=document.getElementById('hermesNote'); if(hn) hn.textContent=k.length?(`обучение · ${k.length} тем`):'news.json · +/− обучает ленту'; else {const s=document.getElementById('nwSync'); if(s&&!s.textContent) s.textContent=k.length?(`обучение · ${k.length} тем`):'';}
   }catch(e){
     body.innerHTML='<div class="hermes-empty"><div class="hermes-empty-icon">📡</div><div class="hermes-empty-text">news.json не найден.<br>Гермес ещё не публиковал ленту.</div></div>';
   }

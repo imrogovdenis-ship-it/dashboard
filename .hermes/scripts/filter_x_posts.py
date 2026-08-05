@@ -252,6 +252,7 @@ def main():
         text_clean = re.sub(r"^RT\s+@\w+:\s*", "", text)
 
         print(f"  Translating post from @{author} (score={s:.1f})...", file=sys.stderr)
+        # Keep a short label + longer body (dashboard merges into one block).
         title_en = text_clean[:80]
         dot = title_en.find(".")
         if dot > 20:
@@ -260,8 +261,9 @@ def main():
             title_en += "..."
         title_ru = translate_text(title_en, 80)
 
-        summary_en = text_clean[:250] + ("..." if len(text_clean) > 250 else "")
-        summary_ru = translate_text(summary_en, 250)
+        # ~3 sentences worth of original text for the unified card body
+        summary_en = text_clean[:480] + ("..." if len(text_clean) > 480 else "")
+        summary_ru = translate_text(summary_en, 480)
 
         items.append(
             {
