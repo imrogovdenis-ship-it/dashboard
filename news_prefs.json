@@ -1,13 +1,33 @@
 {
-  "updated": "2026-08-05T06:12:21.481408+00:00",
+  "updated": "2026-08-05T06:12:24.825015+00:00",
   "keywords": [
     "jetson",
     "hermes agent",
     "vision pro"
   ],
-  "term_scores": {},
-  "source_scores": {},
-  "category_scores": {},
-  "votes": [],
+  "term_scores": {
+    "deepseek": 1.0,
+    "flash": 1.0,
+    "launch": 1.0,
+    "new": 1.0,
+    "reasoning": 1.0,
+    "model": 1.0
+  },
+  "source_scores": {
+    "@deepseek_ai": 3.0
+  },
+  "category_scores": {
+    "ai": 1.5
+  },
+  "votes": [
+    {
+      "url": "https://x.com/test/status/1",
+      "v": 1,
+      "title": "DeepSeek V4 Flash launch",
+      "source": "@deepseek_ai",
+      "category": "ai",
+      "at": "2026-08-05T06:12:24.824995+00:00"
+    }
+  ],
   "hidden_urls": []
 }
