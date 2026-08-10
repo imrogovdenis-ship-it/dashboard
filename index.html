@@ -299,8 +299,8 @@ a.news-main:hover{background:rgba(74,144,217,.08);border-color:var(--accent-bord
 (function(){const cv=document.getElementById('ptc'),ctx=cv.getContext('2d');let W,H,pts=[];function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;pts=[];for(let i=0;i<40;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,r:Math.random()*1.2+.4,a:Math.random()*.1+.03})}function dr(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(74,144,217,${p.a})`;ctx.fill()});for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<120){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(74,144,217,${.02*(1-d/120)})`;ctx.lineWidth=.5;ctx.stroke()}}requestAnimationFrame(dr)}rs();dr();addEventListener('resize',rs)})();
 const ZONES=[
 {id:'saopaulo',tz:'America/Sao_Paulo',label:'Сан-Паулу',flag:'🇧🇷',lat:-23.55,lon:-46.63},
-{id:'dubai',tz:'Asia/Dubai',label:'Дубай',flag:'🇦🇪',lat:25.2,lon:55.27},
 {id:'moscow',tz:'Europe/Moscow',label:'Москва',flag:'🇷🇺',lat:55.75,lon:37.62},
+{id:'dubai',tz:'Asia/Dubai',label:'Дубай',flag:'🇦🇪',lat:25.2,lon:55.27},
 {id:'bangkok',tz:'Asia/Bangkok',label:'Бангкок',flag:'🇹🇭',lat:13.76,lon:100.50},
 {id:'guangzhou',tz:'Asia/Shanghai',label:'Гуанчжоу',flag:'🇨🇳',lat:23.13,lon:113.26}
 ];
