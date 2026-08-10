@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-10T11:13:43.140834+00:00",
+  "updated": "2026-08-10T11:13:46.707257+00:00",
   "keywords": [
     "jetson",
     "hermes agent",
@@ -171,7 +171,20 @@
     "вчера": -1.0,
     "ждал": -1.0,
     "жену": -1.0,
-    "спа-салоне.": -1.0
+    "спа-салоне.": -1.0,
+    "macinvr": -2.0,
+    "приятно": -2.0,
+    "слышать": -2.0,
+    "duo": -2.0,
+    "создан": -2.0,
+    "более": -2.0,
+    "длительных": -2.0,
+    "захватывающих...": -1.0,
+    "захватывающих": -1.0,
+    "сеансов": -1.0,
+    "виртуальной": -1.0,
+    "реальности.наслаждайтесь": -1.0,
+    "временем": -1.0
   },
   "source_scores": {
     "@deepseek_ai": 3.0,
@@ -184,12 +197,14 @@
     "@Biggsism": -3.0,
     "@Saboo_Shubham_": -3.0,
     "@bmfshow": -3.0,
-    "@staskulesh": -3.0
+    "@staskulesh": -3.0,
+    "@KIWIdesign_shop": -3.0
   },
   "category_scores": {
     "ai": 1.5,
     "market": -4.5,
-    "biz": -6.0
+    "biz": -6.0,
+    "portal": -1.5
   },
   "votes": [
     {
@@ -279,6 +294,14 @@
       "source": "@staskulesh",
       "category": "ai",
       "at": "2026-08-10T11:13:43.140811+00:00"
+    },
+    {
+      "url": "https://x.com/KIWIdesign_shop/status/2086748531063505192",
+      "v": -1,
+      "title": "@macinvr Приятно слышать!😎 K4 Duo создан для более длительных и захватывающих...",
+      "source": "@KIWIdesign_shop",
+      "category": "portal",
+      "at": "2026-08-10T11:13:46.707237+00:00"
     }
   ],
   "hidden_urls": [
@@ -290,6 +313,7 @@
     "https://x.com/Biggsism/status/2086386525596533110",
     "https://x.com/Saboo_Shubham_/status/2086359337220624683",
     "https://x.com/bmfshow/status/2086564964190327174",
-    "https://x.com/staskulesh/status/2086759450061234554"
+    "https://x.com/staskulesh/status/2086759450061234554",
+    "https://x.com/KIWIdesign_shop/status/2086748531063505192"
   ]
 }
