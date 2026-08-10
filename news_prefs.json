@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-10T08:48:20.806485+00:00",
+  "updated": "2026-08-10T08:56:47.785298+00:00",
   "keywords": [
     "jetson",
     "hermes agent",
@@ -141,7 +141,23 @@
     "знать": 1.0,
     "совершенно": 1.0,
     "новую": 1.0,
-    "настройку": 1.0
+    "настройку": 1.0,
+    "vrified": -2.0,
+    "games": -2.0,
+    "мне": -2.0,
+    "очень": -2.0,
+    "хотелось": -2.0,
+    "получить": -2.0,
+    "больше": -2.0,
+    "информации": -2.0,
+    "опред...": -1.0,
+    "определенно": -1.0,
+    "mario": -1.0,
+    "kart": -1.0,
+    "весьма": -1.0,
+    "вероятно": -1.0,
+    "сказали": -1.0,
+    "версия": -1.0
   },
   "source_scores": {
     "@deepseek_ai": 3.0,
@@ -152,11 +168,12 @@
     "@Teknium": 6.0,
     "@ChinaDaily": -3.0,
     "@Biggsism": -3.0,
-    "@Saboo_Shubham_": -3.0
+    "@Saboo_Shubham_": -3.0,
+    "@bmfshow": -3.0
   },
   "category_scores": {
     "ai": 3.0,
-    "market": -3.0,
+    "market": -4.5,
     "biz": -6.0
   },
   "votes": [
@@ -231,6 +248,14 @@
       "source": "@Teknium",
       "category": "ai",
       "at": "2026-08-10T08:48:20.806463+00:00"
+    },
+    {
+      "url": "https://x.com/bmfshow/status/2086564964190327174",
+      "v": -1,
+      "title": "@Vrified_Games Мне бы очень хотелось получить больше информации, но это опред...",
+      "source": "@bmfshow",
+      "category": "market",
+      "at": "2026-08-10T08:56:47.785276+00:00"
     }
   ],
   "hidden_urls": [
@@ -240,6 +265,7 @@
     "https://x.com/TechCrunch/status/2085115917390823839",
     "https://x.com/ChinaDaily/status/2085682372159340811",
     "https://x.com/Biggsism/status/2086386525596533110",
-    "https://x.com/Saboo_Shubham_/status/2086359337220624683"
+    "https://x.com/Saboo_Shubham_/status/2086359337220624683",
+    "https://x.com/bmfshow/status/2086564964190327174"
   ]
 }
