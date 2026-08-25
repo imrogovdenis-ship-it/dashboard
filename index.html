@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<meta name="dz-build" content="pos-v2-reading">
+<meta name="dz-build" content="pos-v3-tasks">
 <title>Denis Rogov — Personal OS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,6 +92,10 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);height:100v
 .cur-rate{font-family:var(--mono);font-size:11px;font-weight:400;font-variant-numeric:tabular-nums}
 .cur-unit{font-size:6px;color:var(--gray)}
 /* Calendar */
+/* Tasks */
+.task-actions{display:flex;gap:4px;margin-top:5px}
+.task-actions button{font-family:var(--mono);font-size:7px;text-transform:uppercase;letter-spacing:.5px;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.22);color:var(--gray-light);border-radius:4px;padding:4px 6px;cursor:pointer}
+.task-actions button:hover{border-color:var(--accent-border);color:var(--accent)}
 /* Goals */
 .goals-body{flex:1;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
 .goals-body::-webkit-scrollbar{width:3px}
@@ -233,18 +237,19 @@ a.news-main:hover{background:rgba(74,144,217,.08);border-color:var(--accent-bord
     <div class="ph"><div class="ph-l"><svg class="ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg><span class="ph-title">Курсы</span></div><span class="ph-hint" id="rateSrc">—</span></div>
     <div class="cur-list" id="curGrid"></div>
   </div>
-  <!-- Col 3: Reading layer + Goals -->
+  <!-- Col 3: Tasks + Reading layer + Goals -->
   <div class="panel fi f3">
-    <div class="ph"><div class="ph-l"><svg class="ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--accent)"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg><span class="ph-title" style="color:var(--accent)">Чтение</span></div><span class="ph-hint" id="rdUpd">—</span></div>
+    <div class="ph"><div class="ph-l"><svg class="ph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--accent)"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg><span class="ph-title" style="color:var(--accent)">Работа</span></div><span class="ph-hint" id="rdUpd">—</span></div>
     <div class="rd-tabs">
-      <div class="rd-tab on" data-rd="inbox">Inbox</div>
+      <div class="rd-tab on" data-rd="tasks">Задачи</div>
+      <div class="rd-tab" data-rd="inbox">Inbox</div>
       <div class="rd-tab" data-rd="reading">Читаю</div>
       <div class="rd-tab" data-rd="later">Later</div>
       <div class="rd-tab" data-rd="goals">Цели</div>
     </div>
     <div class="rd-body" id="rdBody"></div>
     <div class="rd-add" id="rdAddRow">
-      <input id="rdUrl" type="url" placeholder="https://… добавить в inbox" autocomplete="off" spellcheck="false">
+      <input id="rdUrl" type="text" placeholder="Новая задача…" autocomplete="off" spellcheck="false">
       <button type="button" id="rdAddBtn">+</button>
     </div>
     <div class="goals-body" id="goalsBody" style="display:none">
@@ -254,7 +259,7 @@ a.news-main:hover{background:rgba(74,144,217,.08);border-color:var(--accent-bord
       <div class="goal"><div class="goal-check"></div><div class="goal-text">Получить паспорт Аргентины</div><div class="goal-due">30 сен</div></div>
       <div class="goal-section">📌 На квартал</div>
       <div class="goal"><div class="goal-check"></div><div class="goal-text">Запустить portal-ai + продажи + блог</div><div class="goal-due">след. ср</div></div>
-      <div class="goal"><div class="goal-check"></div><div class="goal-text">VR выставка в Китае → пул партнёров</div><div class="goal-due">15 май</div></div>
+      <div class="goal"><div class="goal-check"></div><div class="goal-text">VR выставка в Китае → пул партнеров</div><div class="goal-due">15 май</div></div>
       <div class="goal-section">📋 На месяц</div>
       <div class="goal"><div class="goal-check"></div><div class="goal-text">Найти платформу для продажи девайсов</div><div class="goal-due">след. ср</div></div>
       <div class="goal"><div class="goal-check"></div><div class="goal-text">Протестировать все образцы AI очков</div><div class="goal-due">след. ср</div></div>
@@ -373,10 +378,10 @@ let nwItems=[];
 function timeAgo(iso){const d=new Date(iso),now=new Date(),s=Math.floor((now-d)/1000);
 if(s<60)return 'только что';if(s<3600)return Math.floor(s/60)+' мин';if(s<86400)return Math.floor(s/3600)+' ч';return Math.floor(s/86400)+' д'}
 function nwEsc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function nwTok(t){return String(t||'').toLowerCase().replace(/ё/g,'е').match(/[a-zа-я0-9][a-zа-я0-9+.#-]{2,}/g)||[]}
+function nwTok(t){return String(t||'').toLowerCase().replace(/\u0451/g,'е').match(/[a-zа-я0-9][a-zа-я0-9+.#-]{2,}/g)||[]}
 function nwScoreItem(n){
-  const p=nwPrefs; let s=0; const text=((n.title||'')+' '+(n.summary||'')+' '+(n.source||'')).toLowerCase().replace(/ё/g,'е');
-  (p.keywords||[]).forEach(k=>{if(k&&text.includes(String(k).toLowerCase().replace(/ё/g,'е')))s+=50});
+  const p=nwPrefs; let s=0; const text=((n.title||'')+' '+(n.summary||'')+' '+(n.source||'')).toLowerCase().replace(/\u0451/g,'е');
+  (p.keywords||[]).forEach(k=>{if(k&&text.includes(String(k).toLowerCase().replace(/\u0451/g,'е')))s+=50});
   nwTok(text).forEach(tok=>{const w=p.term_scores[tok]; if(w)s+=Number(w)*3});
   if(n.source&&p.source_scores[n.source])s+=Number(p.source_scores[n.source])*5;
   if(n.category&&p.category_scores[n.category])s+=Number(p.category_scores[n.category])*2;
@@ -408,7 +413,7 @@ function nwRenderKw(){
 }
 function nwAddKw(){
   const inp=document.getElementById('nwKw'); if(!inp)return;
-  let k=(inp.value||'').trim().replace(/ё/g,'е'); if(!k)return;
+  let k=(inp.value||'').trim().replace(/\u0451/g,'е'); if(!k)return;
   if(k.length>64)k=k.slice(0,64);
   const low=new Set((nwPrefs.keywords||[]).map(x=>String(x).toLowerCase()));
   if(!low.has(k.toLowerCase())){nwPrefs.keywords=(nwPrefs.keywords||[]).concat([k]).slice(0,80); nwSave(nwPrefs)}
@@ -459,7 +464,7 @@ function nwBodyText(n){
   raw=raw.replace(/\s+/g,' ').trim();
   if(!raw) return '';
   // normalize missing spaces after punctuation (…токены.Мы → …токены. Мы)
-  raw=raw.replace(/([.!?…])([А-ЯA-ZЁ])/g,'$1 $2');
+  raw=raw.replace(/([.!?…])([А-ЯA-Z\u0401])/g,'$1 $2');
   let parts=raw.split(/(?<=[.!?…])\s+/).map(x=>x.trim()).filter(Boolean);
   // drop near-duplicate consecutive sentences
   const uniq=[];
@@ -530,7 +535,7 @@ async function fetchHermes(){
     const k=nwPrefs.keywords||[];
     const hn=document.getElementById('hermesNote'); if(hn) hn.textContent=k.length?(`обучение · ${k.length} тем`):'news.json · +/− обучает ленту'; else {const s=document.getElementById('nwSync'); if(s&&!s.textContent) s.textContent=k.length?(`обучение · ${k.length} тем`):'';}
   }catch(e){
-    body.innerHTML='<div class="hermes-empty"><div class="hermes-empty-icon">📡</div><div class="hermes-empty-text">news.json не найден.<br>Гермес ещё не публиковал ленту.</div></div>';
+    body.innerHTML='<div class="hermes-empty"><div class="hermes-empty-icon">📡</div><div class="hermes-empty-text">news.json не найден.<br>Гермес еще не публиковал ленту.</div></div>';
   }
 }
 // keyword UI bind
@@ -555,18 +560,34 @@ async function fetchHermes(){
 
 
 // ── Personal OS · Reading layer ──
-let rdItems=[]; let rdTab=localStorage.getItem('pos-rd-tab')||'inbox';
+let rdItems=[]; let rdTab=localStorage.getItem('pos-rd-tab')||'tasks';
 const ST_LABEL={inbox:'inbox',reading:'читаю',later:'later',done:'done'};
+const TASK_STATUS={inbox:'inbox',next:'next',in_progress:'work',blocked:'block',done:'done'};
+function taskLoad(){try{return JSON.parse(localStorage.getItem('pos-tasks-v1')||'[]')}catch(e){return []}}
+function taskSave(q){localStorage.setItem('pos-tasks-v1',JSON.stringify(q.slice(0,200)))}
+function taskCreate(title){title=String(title||'').trim().replace(/\u0451/g,'е');if(!title)return;const q=taskLoad();q.unshift({id:'task-'+Date.now(),title,status:'inbox',priority:'medium',owner:'Denis',area:'Personal OS',note:'',created_at:new Date().toISOString(),updated_at:new Date().toISOString()});taskSave(q)}
+function taskUpdate(id,patch){const q=taskLoad();const i=q.findIndex(t=>t.id===id);if(i<0)return;q[i]=Object.assign({},q[i],patch,{updated_at:new Date().toISOString()});taskSave(q);rdRender()}
+function taskEdit(id){const q=taskLoad();const t=q.find(x=>x.id===id);if(!t)return;const title=prompt('Название задачи',t.title||'');if(title===null)return;const status=prompt('Статус: inbox / next / in_progress / blocked / done',t.status||'inbox');if(status===null)return;if(!TASK_STATUS[status]){alert('Неверный статус');return}taskUpdate(id,{title:title.trim().replace(/\u0451/g,'е')||t.title,status})}
+function taskCycle(id){const order=['inbox','next','in_progress','blocked','done'];const q=taskLoad();const t=q.find(x=>x.id===id);if(!t)return;const i=order.indexOf(t.status||'inbox');taskUpdate(id,{status:order[(i+1)%order.length]})}
 function rdTime(iso){if(!iso)return '';const s=Math.floor((Date.now()-new Date(iso))/1000);if(s<3600)return Math.max(1,Math.floor(s/60))+'м';if(s<86400)return Math.floor(s/3600)+'ч';return Math.floor(s/86400)+'д'}
 function rdLocalQueue(){try{return JSON.parse(localStorage.getItem('pos-rd-local')||'[]')}catch(e){return []}}
 function rdSaveLocal(q){localStorage.setItem('pos-rd-local',JSON.stringify(q.slice(0,100)))}
 function rdMerged(){const map=new Map();rdItems.forEach(it=>{if(it&&it.url)map.set(it.url,it)});rdLocalQueue().forEach(it=>{if(it&&it.url&&!map.has(it.url))map.set(it.url,it)});return [...map.values()]}
 function rdRender(){
-  const body=document.getElementById('rdBody'); const goals=document.getElementById('goalsBody'); const add=document.getElementById('rdAddRow');
+  const body=document.getElementById('rdBody'); const goals=document.getElementById('goalsBody'); const add=document.getElementById('rdAddRow'); const inp=document.getElementById('rdUrl');
   if(!body)return;
   document.querySelectorAll('.rd-tab').forEach(t=>t.classList.toggle('on',t.dataset.rd===rdTab));
   if(rdTab==='goals'){body.style.display='none';if(add)add.style.display='none';if(goals)goals.style.display='flex';return}
   body.style.display='flex';if(add)add.style.display='flex';if(goals)goals.style.display='none';
+  if(inp)inp.placeholder=rdTab==='tasks'?'Новая задача…':'https://… добавить в inbox';
+  if(rdTab==='tasks'){
+    const list=taskLoad();
+    if(!list.length){body.innerHTML='<div class="rd-empty">Пусто.<br>Добавь задачу ниже.</div>';return}
+    body.innerHTML=list.map(t=>{const st=t.status||'inbox';const title=String(t.title||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));return `<div class="rd-item"><div class="rd-top"><span class="rd-st ${st}">${TASK_STATUS[st]||st}</span><span class="rd-time">${rdTime(t.updated_at||t.created_at)}</span></div><div class="rd-title">${title}</div><div class="rd-meta"><span>${t.owner||''}</span><span>${t.area||''}</span><span>${t.priority||''}</span></div><div class="task-actions"><button type="button" data-task-cycle="${t.id}">статус</button><button type="button" data-task-edit="${t.id}">редактировать</button></div></div>`}).join('');
+    body.querySelectorAll('[data-task-cycle]').forEach(b=>b.onclick=()=>taskCycle(b.getAttribute('data-task-cycle')));
+    body.querySelectorAll('[data-task-edit]').forEach(b=>b.onclick=()=>taskEdit(b.getAttribute('data-task-edit')));
+    return;
+  }
   const list=rdMerged().filter(it=>(it.status||'inbox')===rdTab);
   if(!list.length){body.innerHTML='<div class="rd-empty">Пусто.<br>С телефона: Share → бот<br>или вставь URL ниже.</div>';return}
   body.innerHTML=list.map(it=>{
@@ -589,7 +610,11 @@ async function rdFetch(){
 }
 function rdAddLocal(){
   const inp=document.getElementById('rdUrl'); if(!inp)return;
-  let url=inp.value.trim(); if(!url)return;
+  let value=inp.value.trim(); if(!value)return;
+  if(rdTab==='tasks'){
+    taskCreate(value); inp.value=''; localStorage.setItem('pos-rd-tab','tasks'); rdRender(); return;
+  }
+  let url=value;
   if(!/^https?:\/\//i.test(url)) url='https://'+url;
   const q=rdLocalQueue();
   if(q.some(x=>x.url===url)||rdItems.some(x=>x.url===url)){inp.value='';rdTab='inbox';rdRender();return}
