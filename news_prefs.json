@@ -1,11 +1,12 @@
 {
-  "updated": "2026-09-21T14:39:15.321685+00:00",
+  "updated": "2026-09-21T14:39:28.490875+00:00",
   "keywords": [
     "jetson",
     "hermes agent",
     "unitree",
     "DJI",
-    "buzz"
+    "buzz",
+    "A2A"
   ],
   "term_scores": {
     "агента": 4.0,
