@@ -241,7 +241,7 @@ label.lbl{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
 const SB_URL = "https://oxsmllzxalxriiwgwpna.supabase.co";
 const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94c21sbHp4YWx4cmlpd2d3cG5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MjkxMTAsImV4cCI6MjEwMzIwNTExMH0.zvrvQQlcsr7z32GJU_fO_xpysJ15J5frtXCPHkfli6Y";
 const TZ = (Intl.DateTimeFormat().resolvedOptions().timeZone) || "America/Argentina/Buenos_Aires";
-const VERSION = "1.0.0";
+const VERSION = "1.0.1";
 const sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, storageKey: "en-auth" } });
 
 /* ================= HELPERS ================= */
@@ -461,58 +461,47 @@ async function boot() {
   }
   startApp();
 }
-function renderAuth(msg = "", mode = "in") {
+function renderAuth(msg = "") {
   $("#tabbar").classList.add("hidden");
   $("#main").innerHTML = `
     <div class="auth">
       <h1>English</h1>
       <p class="muted">Личный тренажер: слова и ошибки с уроков, повторение по расписанию, календарь занятий.</p>
       <div class="panel stack">
-        <div class="field"><label class="lbl" for="em">Почта</label><input type="email" id="em" autocomplete="email" inputmode="email"></div>
-        <div class="field"><label class="lbl" for="pw">Пароль</label><input type="password" id="pw" autocomplete="${mode === "in" ? "current-password" : "new-password"}"></div>
-        <button class="btn primary big" id="go">${mode === "in" ? "Войти" : "Создать аккаунт"}</button>
+        <div class="field"><label class="lbl" for="em">Почта</label><input type="email" id="em" autocomplete="username" inputmode="email" value="${esc(LS.get("email", ""))}"></div>
+        <div class="field"><label class="lbl" for="pw">Пароль</label><input type="password" id="pw" autocomplete="current-password"></div>
+        <button class="btn primary big" id="go">Войти</button>
         <div class="err" id="err">${esc(msg)}</div>
-        <button class="linkbtn" id="sw">${mode === "in" ? "Первый вход? Создать аккаунт" : "Уже есть аккаунт? Войти"}</button>
+        <p class="muted" style="font-size:13px;margin:0">Вход нужен один раз на устройстве, дальше приложение помнит вас. Если пароль забылся, его можно сбросить через Claude.</p>
       </div>
     </div>`;
-  $("#sw").onclick = () => renderAuth("", mode === "in" ? "up" : "in");
   const go = async () => {
     const email = $("#em").value.trim(), password = $("#pw").value;
     if (!email || !password) { $("#err").textContent = "Введите почту и пароль."; return; }
-    if (mode === "up" && password.length < 8) { $("#err").textContent = "Пароль должен быть не короче 8 символов."; return; }
     $("#go").disabled = true; $("#err").textContent = "";
-    const res = mode === "in" ? await sb.auth.signInWithPassword({ email, password }) : await sb.auth.signUp({ email, password });
+    const res = await sb.auth.signInWithPassword({ email, password });
     $("#go").disabled = false;
     if (res.error) {
       const m = res.error.message || "";
-      $("#err").textContent = /Invalid login/i.test(m) ? "Неверная почта или пароль." : /not confirmed/i.test(m) ? "Почта еще не подтверждена: откройте письмо от Supabase и нажмите ссылку." : /registered/i.test(m) ? "Такой аккаунт уже есть, войдите." : m;
+      $("#err").textContent = /Invalid login/i.test(m) ? "Неверная почта или пароль." : /fetch|network/i.test(m) ? "Нет связи с сервером. Проверьте интернет." : m;
       return;
     }
-    if (mode === "up" && !res.data.session) { renderAuth("Письмо для подтверждения отправлено. Подтвердите почту и войдите.", "in"); return; }
+    LS.set("email", email);
     boot();
   };
   $("#go").onclick = go;
   $("#pw").onkeydown = e => { if (e.key === "Enter") go(); };
+  if (LS.get("email", "")) setTimeout(() => $("#pw").focus(), 50);
 }
 function renderClaim() {
   $("#tabbar").classList.add("hidden");
   $("#main").innerHTML = `
     <div class="auth">
-      <h1>Привязка аккаунта</h1>
-      <p class="muted">Приложение открывается только владельцу. Введите код привязки, который прислал Claude. Код срабатывает один раз.</p>
-      <div class="panel stack">
-        <div class="field"><label class="lbl" for="code">Код привязки</label><input type="text" id="code" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
-        <button class="btn primary big" id="go">Привязать</button>
-        <div class="err" id="err"></div>
-        <button class="linkbtn" id="out">Выйти из аккаунта</button>
-      </div>
+      <h1>Нет доступа</h1>
+      <p class="muted">Этот аккаунт не привязан к тренажеру. Войдите под своей почтой.</p>
+      <button class="btn primary big" id="out">Войти под другим аккаунтом</button>
     </div>`;
-  $("#out").onclick = async () => { await sb.auth.signOut(); renderAuth(); };
-  $("#go").onclick = async () => {
-    const { data, error } = await sb.rpc("en_claim", { code: $("#code").value.trim().toUpperCase() });
-    if (error || !data) { $("#err").textContent = "Код не подошел."; return; }
-    LS.set("owner", true); startApp();
-  };
+  $("#out").onclick = async () => { await sb.auth.signOut(); LS.set("owner", false); renderAuth(); };
 }
 
 /* ================= ROUTER ================= */
