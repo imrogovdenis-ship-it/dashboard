@@ -105,7 +105,7 @@ nav.tabbar a .badge{position:absolute;top:6px;left:calc(50% + 6px);background:va
 /* Review */
 .progress{height:6px;background:var(--line);border-radius:99px;overflow:hidden}
 .progress i{display:block;height:100%;background:var(--ok);transition:width .3s}
-.flash{min-height:300px;border-radius:18px;border:1px solid var(--line);background:var(--surface);padding:28px 20px 22px;display:grid;align-content:center;gap:12px;text-align:center;position:relative}
+.flash{min-height:300px;border-radius:18px;border:1px solid var(--line);background:var(--surface);padding:52px 20px 22px;display:grid;align-content:center;gap:12px;text-align:center;position:relative}
 .flash .kind{position:absolute;top:12px;left:14px}
 .flash .say{position:absolute;top:10px;right:10px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:4px 10px;font-size:13px;font-weight:600}
 .flash .term{font-family:var(--display);font-size:clamp(22px,6vw,30px);font-weight:700;line-height:1.25;overflow-wrap:anywhere}
@@ -179,6 +179,28 @@ label.lbl{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
 .focus div{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:12px 14px}
 .focus.good div{border-left-color:var(--ok)}
 
+/* Error analysis */
+.an{display:grid;gap:14px;text-align:left}
+.an .lbl2{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.an .said-x{color:var(--pen);text-decoration:line-through;text-decoration-thickness:1.5px;font-weight:600;font-size:17px}
+.an .okline{font-weight:700;font-size:18px;line-height:1.35}
+.an ol{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:n}
+.an ol li{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:grid;gap:4px;font-size:15px}
+.an .chg{font-family:var(--mono);font-size:14px;overflow-wrap:anywhere}
+.an .chg s{color:var(--pen)} .an .chg b{color:var(--ok);font-weight:600}
+.formula{display:grid;gap:8px}
+.formula .ln{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.formula .tag{font-size:12px;color:var(--muted);font-weight:600;width:100%}
+.formula .p{border:1.5px solid var(--accent);color:var(--accent);background:var(--accent-soft);border-radius:8px;padding:3px 8px;font-family:var(--mono);font-size:13px;font-weight:500}
+.formula .plus{color:var(--muted);font-weight:700;padding:0 1px}
+.an .exs{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.an .exs li{display:flex;gap:8px;align-items:baseline}
+.an .exs button{border:1px solid var(--line);background:var(--surface);color:var(--accent);border-radius:6px;padding:0 6px;font-size:12px;line-height:20px;flex:0 0 auto}
+.flash .an{margin-top:4px}
+.types{display:flex;flex-wrap:wrap;gap:6px}
+.types span{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 10px;font-size:13px;font-weight:600}
+.types b{font-family:var(--mono);color:var(--pen);font-weight:500;margin-left:4px}
+
 /* Calendar */
 .stats4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
@@ -241,7 +263,7 @@ label.lbl{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
 const SB_URL = "https://oxsmllzxalxriiwgwpna.supabase.co";
 const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94c21sbHp4YWx4cmlpd2d3cG5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MjkxMTAsImV4cCI6MjEwMzIwNTExMH0.zvrvQQlcsr7z32GJU_fO_xpysJ15J5frtXCPHkfli6Y";
 const TZ = (Intl.DateTimeFormat().resolvedOptions().timeZone) || "America/Argentina/Buenos_Aires";
-const VERSION = "1.0.1";
+const VERSION = "1.1.0";
 const sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, storageKey: "en-auth" } });
 
 /* ================= HELPERS ================= */
@@ -269,6 +291,26 @@ function norm(s) {
     .replace(/'ll\b/g, " will").replace(/'d\b/g, " would").replace(/\b(he|she|it|that|what)'s\b/g, "$1 is")
     .replace(/[.,!?;:"«»()\-–—]/g, " ").replace(/\s+/g, " ").trim();
 }
+function formulaHTML(lines) {
+  return `<div class="formula">${lines.map(l => {
+    let tag = ""; const m = l.match(/^([^:+]{2,30}):\s*(.+)$/); if (m) { tag = m[1]; l = m[2]; }
+    return `<div class="ln">${tag ? `<span class="tag">${esc(tag)}</span>` : ""}${l.split(" + ").map(x => `<span class="p">${esc(x)}</span>`).join('<span class="plus">+</span>')}</div>`;
+  }).join("")}</div>`;
+}
+const unitFromNote = n => { const m = String(n || "").match(/\(Murphy, ([^)]+)\)/); return m ? m[1] : ""; };
+function analysisHTML(an, said, correct, unit) {
+  if (!an) return "";
+  return `<div class="an">
+    ${said ? `<div><div class="lbl2">Как было сказано</div><div class="said-x">${esc(said)}</div></div>` : ""}
+    ${correct ? `<div><div class="lbl2">Как правильно</div><div class="okline">${hl(correct)}</div></div>` : ""}
+    ${(an.parts || []).length ? `<div><div class="lbl2">Что не так</div><ol>${an.parts.map(x => `<li><div class="chg"><s>${esc(x.was)}</s> → <b>${esc(x.now)}</b></div><div>${esc(x.why)}</div></li>`).join("")}</ol></div>` : ""}
+    ${(an.formula || []).length ? `<div><div class="lbl2">Формула</div>${formulaHTML(an.formula)}</div>` : ""}
+    ${an.when ? `<div style="font-size:14px"><span class="muted">Когда так говорят:</span> ${esc(an.when)}</div>` : ""}
+    ${(an.examples || []).length ? `<div><div class="lbl2">Еще примеры</div><ul class="exs">${an.examples.map(e => `<li><button data-say="${esc(e)}" aria-label="Послушать пример">▶</button><span>${esc(e)}</span></li>`).join("")}</ul></div>` : ""}
+    ${unit ? `<div><span class="chip">Murphy · ${esc(unit)}</span></div>` : ""}
+  </div>`;
+}
+document.addEventListener("click", e => { const b = e.target.closest("button[data-say]"); if (b) { e.stopPropagation(); speak(b.dataset.say); } });
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
 /* ================= STORAGE ================= */
@@ -622,7 +664,7 @@ function renderReview() {
   let front, back;
   if (c.kind === "fix") {
     front = `<div class="q">Как сказать правильно?</div><div class="wrong">${esc(c.front)}</div>`;
-    back = `<div class="ans">${hl(c.back)}</div>${c.note ? `<div class="note">${hl(c.note)}</div>` : ""}`;
+    back = `<div class="ans">${hl(c.back)}</div>${c.analysis ? analysisHTML(c.analysis, null, null, unitFromNote(c.note)) : (c.note ? `<div class="note">${hl(c.note)}</div>` : "")}`;
   } else if (!flip) {
     front = `<div class="term">${esc(c.front)}</div>${c.ipa ? `<div class="ipa">${esc(c.ipa)}</div>` : ""}`;
     back = `<div class="ans">${esc(c.back)}</div>${c.example ? `<div class="ex">${esc(c.example)}</div>` : ""}${c.note ? `<div class="note">${hl(c.note)}</div>` : ""}`;
@@ -709,12 +751,17 @@ function renderLesson() {
       ${l.summary ? `<p style="margin:0">${esc(l.summary)}</p>` : ""}
       <div class="panel row"><span>${nCards} ${plural(nCards, "карточка", "карточки", "карточек")} с этого урока уже в повторении</span><span class="spacer"></span><button class="btn" onclick="location.hash='#words';WFILTER='lesson:${l.id}'">Посмотреть</button></div>
       ${(l.focus || []).length ? `<h2>Фокус на следующее занятие</h2><div class="focus">${l.focus.map(f => `<div><strong>${esc(f.title)}</strong>${f.detail ? `<br><span class="muted" style="font-size:14px">${esc(f.detail)}</span>` : ""}${f.example ? `<br><em>${esc(f.example)}</em>` : ""}</div>`).join("")}</div>` : ""}
+      ${(ex.fix || []).length ? `<h2>Ошибки по типам</h2><div class="types">${errorTypes(ex.fix).map(([t, n]) => `<span>${esc(t)}<b>×${n}</b></span>`).join("")}</div>` : ""}
       ${secs.length ? `<h2>Упражнения</h2>
         <div class="segs" role="tablist">${secs.map(([k, n]) => `<button role="tab" aria-selected="${LESS.sec === k}" onclick="LESS.sec='${k}';renderLesson()">${n}<b>${cnt(k)}</b></button>`).join("")}</div>
         <div class="panel" id="expanel"></div>` : ""}
       ${(l.good || []).length ? `<h2>Что получилось хорошо</h2><div class="focus good">${l.good.map(g => `<div>${g.t ? `<span class="mono muted">${esc(g.t)}</span> ` : ""}<strong>${esc(g.quote)}</strong>${g.why ? `<br><span class="muted" style="font-size:14px">${esc(g.why)}</span>` : ""}</div>`).join("")}</div>` : ""}
     </div>`;
   if (secs.length) renderExercise(l);
+}
+function errorTypes(fix) {
+  const m = {}; fix.forEach(f => { const t = f.type || "другое"; m[t] = (m[t] || 0) + 1; });
+  return Object.entries(m).sort((a, b) => b[1] - a[1]);
 }
 function recordAttempt(l, section, item, correct) {
   const id = uuid();
@@ -752,7 +799,7 @@ function renderExercise(l) {
     const fb = (ok, given, manual) => {
       const alts = (it.a || []).slice(1, 4).map(esc).join(" · ");
       $("#xfb").innerHTML = `<div class="fb ${ok ? "ok" : "bad"}"><div class="v">${ok ? (manual ? "Засчитано" : "Верно") : "Пока не совпадает"}</div>
-        <div class="r">${hl(model)}</div>${rule ? `<div>${esc(rule)}</div>` : ""}${chip(it.u)}
+        ${sec === "fix" && it.analysis ? analysisHTML(it.analysis, null, model, it.u) : `<div class="r">${hl(model)}</div>${rule ? `<div>${esc(rule)}</div>` : ""}${chip(it.u)}`}
         ${alts ? `<div class="muted" style="font-size:13px">Тоже подходит: ${alts}</div>` : ""}
         <div class="row"><button class="linkbtn" id="xsay">▶ Послушать</button>${!ok && given ? `<span class="spacer"></span><button class="linkbtn" id="xovr">Мой вариант тоже верный</button>` : ""}</div></div>`;
       $("#xsay").onclick = () => speak(strip(model));
@@ -848,6 +895,7 @@ function openCardSheet(id) {
     <div class="grab"></div>
     <div class="row"><h2>${c ? "Карточка" : "Новое слово"}</h2><span class="spacer"></span><button class="iconbtn" aria-label="Закрыть" id="sx">✕</button></div>
     ${c ? `<div class="row">${cardStatus(c)}<span class="muted" style="font-size:13px">${c.reps || 0} ${plural(c.reps || 0, "повторение", "повторения", "повторений")}${c.lapses ? `, забыто ${c.lapses}` : ""}${c.state === 2 ? ` · интервал ${Math.round(c.interval_days)} д` : ""}</span></div>` : ""}
+    ${isFix && c.analysis ? `<div class="panel">${analysisHTML(c.analysis, c.front, c.back, unitFromNote(c.note))}</div><h2 style="font-size:15px">Редактировать</h2>` : ""}
     <div class="field"><label class="lbl" for="cf">${isFix ? "Как было сказано" : "Слово или фраза по-английски"}</label>
       <div class="row" style="flex-wrap:nowrap"><input type="text" id="cf" value="${esc(c ? c.front : "")}" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="например, take your time">
       ${isFix ? "" : `<button class="btn" id="ai" style="white-space:nowrap">✨ AI</button>`}</div></div>
