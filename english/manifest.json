@@ -1,0 +1,22 @@
+{
+  "name": "English · личный тренажер",
+  "short_name": "English",
+  "description": "Слова и ошибки с уроков, интервальное повторение и календарь занятий",
+  "id": "./",
+  "start_url": "./#today",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "ru",
+  "background_color": "#F3F4F7",
+  "theme_color": "#17213A",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Повторять", "url": "./#review" },
+    { "name": "Добавить слово", "url": "./#add" }
+  ]
+}

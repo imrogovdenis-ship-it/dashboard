@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#17213A">
+<title>English · личный тренажер</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* A teacher's marked-up notebook: red pen for what was said, highlighter for the fix, ink blue for controls. */
+:root{
+  --paper:#F3F4F7; --surface:#FFFFFF; --ink:#17213A; --muted:#5A6378; --line:#DCE0E8;
+  --accent:#2B55E6; --accent-soft:#E6ECFF; --pen:#C8352C; --ok:#1C8556; --ok-soft:#E3F4EB;
+  --warn:#B86E00; --bad-soft:#FCE9E7; --marker:#FFE36B; --on-accent:#FFFFFF;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Onest","Segoe UI",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --nav-h:64px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F131C; --surface:#171E2C; --ink:#E5E9F1; --muted:#9AA3B6; --line:#283146;
+    --accent:#7F9CFF; --accent-soft:#1F2A47; --pen:#FF6F62; --ok:#41C98B; --ok-soft:#163327;
+    --warn:#F0A63A; --bad-soft:#3A1E1D; --marker:rgba(255,214,70,.32); --on-accent:#0F131C; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F131C; --surface:#171E2C; --ink:#E5E9F1; --muted:#9AA3B6; --line:#283146;
+  --accent:#7F9CFF; --accent-soft:#1F2A47; --pen:#FF6F62; --ok:#41C98B; --ok-soft:#163327;
+  --warn:#F0A63A; --bad-soft:#3A1E1D; --marker:rgba(255,214,70,.32); --on-accent:#0F131C; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+h1,h2,h3{font-family:var(--display);font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1{font-size:24px;line-height:1.2}
+h2{font-size:17px;line-height:1.3}
+mark{background:linear-gradient(transparent 12%,var(--marker) 12%,var(--marker) 88%,transparent 88%);color:inherit;padding:0 .12em;border-radius:2px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--mono);font-size:12px}
+.muted{color:var(--muted)}
+.hidden{display:none!important}
+
+.app{max-width:720px;margin:0 auto;min-height:100%;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(var(--nav-h) + env(safe-area-inset-bottom) + 24px)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
+.sync{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;background:none;border:none;padding:4px 0}
+.sync i{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block}
+.sync.off i{background:var(--warn)}
+.sync.busy i{background:var(--accent);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:10px;width:40px;height:40px;display:grid;place-items:center;font-size:18px}
+
+/* Bottom nav */
+nav.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav.tabbar .in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);height:var(--nav-h)}
+nav.tabbar a{position:relative;display:grid;place-items:center;align-content:center;gap:2px;text-decoration:none;color:var(--muted);font-size:11px;font-weight:600}
+nav.tabbar a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav.tabbar a.on{color:var(--ink)}
+nav.tabbar a.on svg{stroke:var(--accent)}
+nav.tabbar a .badge{position:absolute;top:6px;left:calc(50% + 6px);background:var(--pen);color:#fff;font-size:10px;border-radius:99px;padding:0 5px;line-height:16px;font-family:var(--mono)}
+
+/* Blocks */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.stack{display:grid;gap:14px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.spacer{flex:1}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:11px 16px;font-weight:600;font-size:15px;line-height:1.2}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.big{padding:15px 18px;font-size:17px;width:100%}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--pen);border-color:color-mix(in srgb,var(--pen) 40%,var(--line))}
+.btn:disabled{opacity:.45;cursor:default}
+.chip{display:inline-block;font-size:12px;font-weight:600;border-radius:6px;padding:2px 8px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.chip.pen{background:var(--bad-soft);color:var(--pen)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.grey{background:var(--paper);color:var(--muted);border:1px solid var(--line)}
+.eyebrow{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+
+/* Today */
+.hero{display:grid;gap:14px}
+.hero .nums{display:flex;gap:22px;align-items:flex-end}
+.hero .n{font-family:var(--display);font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.hero .l{font-size:13px;color:var(--muted)}
+.streak{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.ring{width:64px;height:64px}
+.ring circle{fill:none;stroke-width:7}
+.ring .bg{stroke:var(--line)}
+.ring .fg{stroke:var(--ok);stroke-linecap:round;transition:stroke-dashoffset .4s}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:4px}
+.week div{display:grid;justify-items:center;gap:4px;font-size:11px;color:var(--muted)}
+.week b{width:26px;height:26px;border-radius:8px;background:var(--paper);border:1px solid var(--line);display:grid;place-items:center;font-size:11px;font-family:var(--mono);font-weight:500;color:var(--muted)}
+.week b.on{background:var(--ok);border-color:var(--ok);color:var(--on-accent)}
+.week b.today{outline:2px solid var(--ink);outline-offset:1px}
+.lessoncard{display:grid;gap:6px;text-decoration:none;color:inherit}
+.lessoncard .t{font-weight:700;font-size:17px}
+
+/* Review */
+.progress{height:6px;background:var(--line);border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--ok);transition:width .3s}
+.flash{min-height:300px;border-radius:18px;border:1px solid var(--line);background:var(--surface);padding:28px 20px 22px;display:grid;align-content:center;gap:12px;text-align:center;position:relative}
+.flash .kind{position:absolute;top:12px;left:14px}
+.flash .say{position:absolute;top:10px;right:10px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:4px 10px;font-size:13px;font-weight:600}
+.flash .term{font-family:var(--display);font-size:clamp(22px,6vw,30px);font-weight:700;line-height:1.25;overflow-wrap:anywhere}
+.flash .ipa{font-family:var(--mono);color:var(--muted);font-size:14px}
+.flash .q{font-size:13px;color:var(--muted);font-weight:600}
+.flash .wrong{font-size:20px;font-weight:600;color:var(--pen);text-decoration:line-through;text-decoration-thickness:1.5px}
+.flash hr{border:none;border-top:1px dashed var(--line);width:100%;margin:4px 0}
+.flash .ans{font-size:21px;font-weight:600;line-height:1.35}
+.flash .ex{font-style:italic;max-width:52ch;margin:0 auto}
+.flash .note{color:var(--muted);font-size:14px;max-width:52ch;margin:0 auto}
+.rates{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.rates button{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 4px;display:grid;gap:2px;font-weight:700;font-size:15px}
+.rates button small{font-family:var(--mono);font-weight:500;font-size:11px;color:var(--muted)}
+.rates .r1{border-color:color-mix(in srgb,var(--pen) 55%,var(--line));color:var(--pen)}
+.rates .r3{border-color:color-mix(in srgb,var(--ok) 55%,var(--line));color:var(--ok)}
+.done{text-align:center;display:grid;gap:10px;padding:30px 10px}
+.done .big{font-family:var(--display);font-size:40px}
+
+/* Lists */
+.list{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;text-align:left;width:100%}
+.item .f{font-weight:700;overflow-wrap:anywhere}
+.item .b{color:var(--muted);font-size:14px;grid-column:1;overflow-wrap:anywhere}
+.item .s{grid-row:1 / span 2;grid-column:2;text-align:right}
+.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin:0 -16px;padding-left:16px;padding-right:16px}
+.filters button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+.filters button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+input[type=text],input[type=email],input[type=password],input[type=search],input[type=time],select,textarea{width:100%;font:inherit;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink)}
+textarea{min-height:70px;resize:vertical}
+label.lbl{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
+.field{display:grid;gap:0}
+.fab{position:fixed;right:max(16px,calc(50% - 344px));bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px);z-index:15;width:56px;height:56px;border-radius:16px;border:none;background:var(--accent);color:var(--on-accent);font-size:28px;box-shadow:0 6px 20px rgba(23,33,58,.25)}
+
+/* Sheet */
+.sheet-bg{position:fixed;inset:0;background:rgba(10,14,24,.45);z-index:40;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--paper);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom));display:grid;gap:14px}
+.sheet .grab{width:40px;height:4px;border-radius:9px;background:var(--line);margin:0 auto}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 84px);z-index:60;background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:12px;font-size:14px;max-width:90vw;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+
+/* Exercises */
+.said{border-left:3px solid var(--pen);padding:6px 0 6px 14px;margin:6px 0 14px}
+.said q{display:block;font-size:19px;font-weight:600;quotes:none;color:var(--pen);text-decoration:line-through;text-decoration-thickness:1.5px}
+.sent{font-size:20px;font-weight:600;margin:4px 0 14px;line-height:1.4}
+.sent .gap{display:inline-block;min-width:70px;border-bottom:2px solid var(--ink);text-align:center;padding:0 6px}
+.opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.opt{border:1.5px solid var(--line);background:var(--paper);border-radius:10px;padding:12px;font-size:17px;font-weight:600;text-align:left}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.opt.bad{border-color:var(--pen);background:var(--bad-soft);color:var(--pen)}
+.fb{margin-top:12px;border-radius:12px;padding:14px 16px;display:grid;gap:8px}
+.fb.ok{background:var(--ok-soft)} .fb.bad{background:var(--bad-soft)}
+.fb .v{font-weight:700} .fb.ok .v{color:var(--ok)} .fb.bad .v{color:var(--pen)}
+.fb .r{font-size:18px;font-weight:600}
+.linkbtn{border:none;background:none;padding:0;color:var(--accent);font-weight:600;font-size:14px;text-decoration:underline;text-underline-offset:3px}
+.build{min-height:56px;border:1.5px dashed var(--line);border-radius:12px;padding:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:12px}
+.build.ok{border-style:solid;border-color:var(--ok);background:var(--ok-soft)}
+.build.bad{border-style:solid;border-color:var(--pen);background:var(--bad-soft)}
+.build:empty::before{content:"Нажимайте на слова ниже";color:var(--muted);font-size:14px}
+.pool{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tile{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 12px;font-size:17px;font-weight:600;box-shadow:0 1px 0 var(--line)}
+.tile.used{visibility:hidden}
+.dots{display:flex;flex-wrap:wrap;gap:4px;margin-top:14px}
+.dots button{width:24px;height:24px;border-radius:6px;border:1px solid var(--line);background:var(--paper);font-size:10px;font-family:var(--mono);padding:0;color:var(--muted)}
+.dots .ok{background:var(--ok);border-color:var(--ok);color:var(--on-accent)}
+.dots .bad{background:var(--pen);border-color:var(--pen);color:var(--on-accent)}
+.dots .cur{outline:2px solid var(--ink);outline-offset:1px}
+.segs{display:flex;gap:6px;overflow-x:auto;margin:0 -16px 12px;padding:0 16px 4px}
+.segs button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;font-weight:600;font-size:14px}
+.segs button[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.segs b{font-family:var(--mono);font-weight:500;font-size:11px;opacity:.7;margin-left:4px}
+.focus{display:grid;gap:8px}
+.focus div{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:12px 14px}
+.focus.good div{border-left-color:var(--ok)}
+
+/* Calendar */
+.stats4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.stat .n{font-family:var(--display);font-size:24px;font-variant-numeric:tabular-nums;line-height:1.2}
+.stat .t{color:var(--muted);font-size:12px}
+.month .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.mgrid .wd{font-size:11px;color:var(--muted);text-align:center;padding-bottom:2px}
+.mgrid button{aspect-ratio:1/1;border:1px solid var(--line);background:var(--paper);border-radius:9px;padding:3px;display:grid;align-content:space-between;font-size:12px;text-align:left;font-variant-numeric:tabular-nums;min-width:0}
+.mgrid button .d{font-weight:600}
+.mgrid button .c{font-family:var(--mono);font-size:10px;justify-self:end}
+.mgrid button.out{visibility:hidden}
+.mgrid button.l1{background:color-mix(in srgb,var(--ok) 22%,var(--surface))}
+.mgrid button.l2{background:color-mix(in srgb,var(--ok) 45%,var(--surface))}
+.mgrid button.l3{background:color-mix(in srgb,var(--ok) 70%,var(--surface));color:#fff}
+.mgrid button.l4{background:var(--ok);color:#fff}
+.mgrid button.fut{background:var(--surface);border-style:dashed}
+.mgrid button.fut .c{color:var(--accent)}
+.mgrid button.today{outline:2px solid var(--ink);outline-offset:1px}
+.mgrid button.sel{border-color:var(--accent);border-width:2px}
+.heat{overflow-x:auto}
+.heat .g{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,12px);gap:3px;width:max-content}
+.heat .g i{width:12px;height:12px;border-radius:3px;background:var(--line);display:block}
+.heat .g i.l1{background:color-mix(in srgb,var(--ok) 30%,var(--line))}
+.heat .g i.l2{background:color-mix(in srgb,var(--ok) 55%,var(--line))}
+.heat .g i.l3{background:color-mix(in srgb,var(--ok) 80%,var(--line))}
+.heat .g i.l4{background:var(--ok)}
+.bars{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;align-items:end;height:120px;border-bottom:1px solid var(--line)}
+.bars div{display:grid;align-content:end;justify-items:center;height:100%;gap:2px}
+.bars b{display:block;width:100%;border-radius:4px 4px 0 0;background:var(--accent);min-height:2px}
+.bars span{font-size:10px;font-family:var(--mono);color:var(--muted)}
+.barlbl{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;font-size:10px;color:var(--muted);text-align:center;margin-top:4px;font-family:var(--mono)}
+
+/* Auth */
+.auth{max-width:420px;margin:8vh auto 0;display:grid;gap:16px}
+.err{color:var(--pen);font-size:14px}
+@media (min-width:600px){.stats4{grid-template-columns:repeat(4,1fr)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div id="main" aria-live="polite"></div>
+</div>
+<nav class="tabbar hidden" id="tabbar" aria-label="Разделы">
+  <div class="in">
+    <a href="#today" data-v="today"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Сегодня</a>
+    <a href="#review" data-v="review"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/></svg><span class="badge hidden" id="dueBadge"></span>Повторять</a>
+    <a href="#lessons" data-v="lessons"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M8 7h7M8 11h5"/></svg>Уроки</a>
+    <a href="#words" data-v="words"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Слова</a>
+    <a href="#calendar" data-v="calendar"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Календарь</a>
+  </div>
+</nav>
+<div id="sheetRoot"></div>
+
+<script src="supabase-2.45.4.js"></script>
+<script>
+"use strict";
+/* ================= CONFIG ================= */
+const SB_URL = "https://oxsmllzxalxriiwgwpna.supabase.co";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94c21sbHp4YWx4cmlpd2d3cG5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MjkxMTAsImV4cCI6MjEwMzIwNTExMH0.zvrvQQlcsr7z32GJU_fO_xpysJ15J5frtXCPHkfli6Y";
+const TZ = (Intl.DateTimeFormat().resolvedOptions().timeZone) || "America/Argentina/Buenos_Aires";
+const VERSION = "1.0.0";
+const sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, storageKey: "en-auth" } });
+
+/* ================= HELPERS ================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const hl = s => esc(s).replace(/&lt;mark&gt;/g, "<mark>").replace(/&lt;\/mark&gt;/g, "</mark>");
+const strip = s => String(s ?? "").replace(/<\/?mark>/g, "");
+const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 3 | 8)).toString(16); }));
+const pad = n => String(n).padStart(2, "0");
+const dayKey = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const startOfDay = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+const endOfToday = () => addDays(startOfDay(new Date()), 1);
+const MONTHS = ["январь","февраль","март","апрель","май","июнь","июль","август","сентябрь","октябрь","ноябрь","декабрь"];
+const MONTHS_GEN = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+const WD = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
+const fmtDate = d => `${d.getDate()} ${MONTHS_GEN[d.getMonth()]}`;
+function plural(n, one, few, many) { const a = Math.abs(n) % 100, b = a % 10; if (a > 10 && a < 20) return many; if (b > 1 && b < 5) return few; if (b === 1) return one; return many; }
+function toast(msg, ms = 2600) { const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), ms); }
+function speak(text) { try { const u = new SpeechSynthesisUtterance(strip(text).replace(/–/g, ",")); u.lang = "en-US"; u.rate = SET.rate; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {} }
+function norm(s) {
+  return String(s).toLowerCase().replace(/[’‘`]/g, "'").replace(/travelled/g, "traveled")
+    .replace(/\bcan't\b/g, "cannot").replace(/\bcan not\b/g, "cannot").replace(/\bwon't\b/g, "will not")
+    .replace(/n't\b/g, " not").replace(/'m\b/g, " am").replace(/'re\b/g, " are").replace(/'ve\b/g, " have")
+    .replace(/'ll\b/g, " will").replace(/'d\b/g, " would").replace(/\b(he|she|it|that|what)'s\b/g, "$1 is")
+    .replace(/[.,!?;:"«»()\-–—]/g, " ").replace(/\s+/g, " ").trim();
+}
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+/* ================= STORAGE ================= */
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem("en." + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem("en." + k, JSON.stringify(v)); } catch (e) {} }
+};
+const DB = {
+  cards: LS.get("cards", []), lessons: LS.get("lessons", []), stats: LS.get("stats", []),
+  attempts: LS.get("attempts", []), outbox: LS.get("outbox", []), syncedAt: LS.get("syncedAt", null)
+};
+const SET = Object.assign({ newPerDay: 10, goal: 20, dir: "en-ru", rate: 0.9 }, LS.get("settings", {}));
+function persist(...keys) { (keys.length ? keys : ["cards", "lessons", "stats", "attempts", "outbox", "syncedAt"]).forEach(k => LS.set(k, DB[k])); }
+function saveSettings() { LS.set("settings", SET); }
+
+/* ================= SCHEDULER (SM-2, как в Anki) ================= */
+const MIN = 60e3, DAY = 864e5;
+const LEARN_STEPS = [1, 10];   // минуты
+const RELEARN_STEP = 10;       // минуты
+function fuzz(iv) { if (iv < 3) return iv; const f = Math.max(1, Math.round(iv * 0.05)); return iv + Math.round((Math.random() * 2 - 1) * f); }
+function schedule(c, r, now = new Date()) {
+  const n = { state: c.state, step: c.step, ease: c.ease || 2.5, interval_days: c.interval_days || 0, reps: (c.reps || 0) + 1, lapses: c.lapses || 0, last_review: now.toISOString() };
+  const t = now.getTime();
+  const setDays = d => { n.interval_days = d; n.due = new Date(t + d * DAY).toISOString(); };
+  if (c.state === 0 || c.state === 1) {
+    n.state = 1;
+    if (r === 1) { n.step = 0; n.due = new Date(t + LEARN_STEPS[0] * MIN).toISOString(); }
+    else if (r === 2) { const m = c.step === 0 ? (LEARN_STEPS[0] + LEARN_STEPS[1]) / 2 : LEARN_STEPS[Math.min(c.step, LEARN_STEPS.length - 1)]; n.due = new Date(t + m * MIN).toISOString(); }
+    else if (r === 3) {
+      if (c.step + 1 < LEARN_STEPS.length) { n.step = c.step + 1; n.due = new Date(t + LEARN_STEPS[n.step] * MIN).toISOString(); }
+      else { n.state = 2; n.step = 0; setDays(1); }
+    } else { n.state = 2; n.step = 0; setDays(4); }
+  } else if (c.state === 3) {
+    if (r <= 2) { n.due = new Date(t + RELEARN_STEP * MIN).toISOString(); }
+    else { n.state = 2; setDays(Math.max(1, c.interval_days || 1)); }
+  } else {
+    const iv = Math.max(1, c.interval_days || 1);
+    if (r === 1) { n.lapses++; n.ease = Math.max(1.3, n.ease - 0.2); n.state = 3; n.step = 0; n.interval_days = Math.max(1, Math.round(iv * 0.2)); n.due = new Date(t + RELEARN_STEP * MIN).toISOString(); }
+    else if (r === 2) { n.ease = Math.max(1.3, n.ease - 0.15); setDays(fuzz(Math.max(iv + 1, Math.round(iv * 1.2)))); }
+    else if (r === 3) { setDays(fuzz(Math.max(iv + 1, Math.round(iv * n.ease)))); }
+    else { n.ease = n.ease + 0.15; setDays(fuzz(Math.max(iv + 2, Math.round(iv * (n.ease - 0.15) * 1.3)))); }
+  }
+  return n;
+}
+function fmtIv(dueIso, now = new Date()) {
+  const ms = new Date(dueIso) - now;
+  if (ms < 60 * MIN) return Math.max(1, Math.round(ms / MIN)) + " мин";
+  if (ms < DAY) return Math.round(ms / (60 * MIN)) + " ч";
+  const d = Math.round(ms / DAY);
+  if (d < 31) return d + " д";
+  if (d < 365) return (Math.round(d / 30 * 10) / 10) + " мес";
+  return (Math.round(d / 365 * 10) / 10) + " г";
+}
+
+/* ================= DERIVED DATA ================= */
+function statsMap() {
+  const m = {};
+  DB.stats.forEach(s => { m[s.day] = { reviews: s.reviews, new_cards: s.new_cards, attempts: s.attempts }; });
+  DB.outbox.forEach(op => {
+    const at = op.t === "review" ? op.review.reviewed_at : op.t === "attempt" ? op.row.at : null;
+    if (!at) return;
+    const k = dayKey(new Date(at)); m[k] = m[k] || { reviews: 0, new_cards: 0, attempts: 0 };
+    if (op.t === "review") { m[k].reviews++; if (op.review.state_before === 0) m[k].new_cards++; } else m[k].attempts++;
+  });
+  return m;
+}
+const activity = s => s ? (s.reviews || 0) + (s.attempts || 0) : 0;
+function streakInfo() {
+  const m = statsMap(); const today = startOfDay(new Date());
+  let cur = 0, d = today;
+  if (!activity(m[dayKey(d)])) d = addDays(d, -1);
+  while (activity(m[dayKey(d)])) { cur++; d = addDays(d, -1); }
+  const days = Object.keys(m).filter(k => activity(m[k])).sort();
+  let best = 0, run = 0, prev = null;
+  days.forEach(k => { const dt = new Date(k + "T00:00:00"); run = prev && Math.round((dt - prev) / DAY) === 1 ? run + 1 : 1; best = Math.max(best, run); prev = dt; });
+  return { cur, best: Math.max(best, cur) };
+}
+const live = c => !c.suspended;
+function dueCards() { const eod = endOfToday(); return DB.cards.filter(c => live(c) && c.state > 0 && new Date(c.due) < eod).sort((a, b) => new Date(a.due) - new Date(b.due)); }
+const srcRank = { lesson: 0, manual: 1, anki: 2 };
+function newCards() {
+  const left = Math.max(0, SET.newPerDay - ((statsMap()[dayKey(new Date())] || {}).new_cards || 0));
+  return DB.cards.filter(c => live(c) && c.state === 0)
+    .sort((a, b) => (b.top - a.top) || ((srcRank[a.source] ?? 3) - (srcRank[b.source] ?? 3)) || (new Date(a.created_at) - new Date(b.created_at)))
+    .slice(0, left);
+}
+function lessonAttemptState(lessonId) {
+  const st = { fix: {}, choice: {}, order: {}, translate: {} };
+  const rows = DB.attempts.filter(a => a.lesson_id === lessonId).concat(DB.outbox.filter(o => o.t === "attempt" && o.row.lesson_id === lessonId).map(o => o.row));
+  rows.sort((a, b) => new Date(a.at) - new Date(b.at)).forEach(a => { if (st[a.section]) st[a.section][a.item] = st[a.section][a.item] === true ? true : a.correct; });
+  return st;
+}
+
+/* ================= SYNC ================= */
+let syncing = false, lastSyncError = null;
+function setSyncUI() {
+  const el = $("#syncBtn"); if (!el) return;
+  const pend = DB.outbox.length;
+  el.className = "sync" + (syncing ? " busy" : (lastSyncError || !navigator.onLine) ? " off" : "");
+  let txt;
+  if (syncing) txt = "Синхронизация…";
+  else if (!navigator.onLine) txt = "Нет сети" + (pend ? `, ${pend} ждут отправки` : "");
+  else if (lastSyncError) txt = "Не удалось синхронизировать" + (pend ? `, ${pend} ждут` : "");
+  else if (DB.syncedAt) { const d = new Date(DB.syncedAt); txt = `Синхронизировано ${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+  else txt = "Еще не синхронизировано";
+  el.innerHTML = `<i></i>${esc(txt)}`;
+}
+async function fetchAll(table, cols = "*") {
+  const out = []; let from = 0;
+  for (;;) {
+    const { data, error } = await sb.from(table).select(cols).order("id").range(from, from + 999);
+    if (error) throw error;
+    out.push(...data); if (data.length < 1000) break; from += 1000;
+  }
+  return out;
+}
+async function runOp(op) {
+  if (op.t === "review") {
+    const { error: e1 } = await sb.from("en_cards").update(op.fields).eq("id", op.card_id); if (e1) throw e1;
+    const { error: e2 } = await sb.from("en_reviews").upsert(op.review, { onConflict: "client_id", ignoreDuplicates: true }); if (e2) throw e2;
+  } else if (op.t === "attempt") {
+    const { error } = await sb.from("en_attempts").upsert(op.row, { onConflict: "client_id", ignoreDuplicates: true }); if (error) throw error;
+  } else if (op.t === "card_insert") {
+    const { error } = await sb.from("en_cards").upsert(op.row, { onConflict: "id" }); if (error) throw error;
+  } else if (op.t === "card_update") {
+    const { error } = await sb.from("en_cards").update(op.fields).eq("id", op.id); if (error) throw error;
+  } else if (op.t === "card_delete") {
+    const { error } = await sb.from("en_cards").delete().eq("id", op.id); if (error) throw error;
+  }
+}
+async function flush() {
+  while (DB.outbox.length) {
+    const op = DB.outbox[0];
+    try { await runOp(op); }
+    catch (e) {
+      const permanent = e && e.code && /^(23|22|42)/.test(String(e.code));
+      op.tries = (op.tries || 0) + 1;
+      if (permanent || op.tries > 6) {
+        if (e.code === "23505") toast("Такая карточка уже есть в словаре");
+        DB.outbox.shift(); persist("outbox"); continue;
+      }
+      persist("outbox"); throw e;
+    }
+    DB.outbox.shift(); persist("outbox");
+  }
+}
+async function sync(opts = {}) {
+  if (syncing || !navigator.onLine) { setSyncUI(); return; }
+  syncing = true; setSyncUI();
+  try {
+    await flush();
+    if (!(VIEW === "review" && SES && SES.queue.length) || opts.force) {
+      const [cards, les, stats, attempts] = await Promise.all([
+        fetchAll("en_cards"),
+        sb.from("en_lessons").select("*").order("lesson_date", { ascending: false }),
+        sb.rpc("en_daily_stats", { p_tz: TZ }),
+        fetchAll("en_attempts", "id,lesson_id,section,item,correct,at")
+      ]);
+      if (les.error) throw les.error; if (stats.error) throw stats.error;
+      DB.cards = cards; DB.lessons = les.data; DB.stats = stats.data; DB.attempts = attempts;
+    } else {
+      const stats = await sb.rpc("en_daily_stats", { p_tz: TZ }); if (!stats.error) DB.stats = stats.data;
+    }
+    DB.syncedAt = Date.now(); lastSyncError = null; persist();
+  } catch (e) { lastSyncError = e; console.warn("sync", e); }
+  finally {
+    syncing = false; setSyncUI();
+    if (VIEW !== "review") render();
+    else if (SES && !SES.queue.length && !SES.done) { startSession(); render(); }
+    updateBadge();
+  }
+}
+let syncTimer = null;
+function queueSync(ms = 1500) { clearTimeout(syncTimer); syncTimer = setTimeout(() => sync(), ms); }
+window.addEventListener("online", () => sync());
+window.addEventListener("offline", setSyncUI);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && USER) sync(); });
+
+/* ================= AUTH ================= */
+let USER = null;
+async function boot() {
+  const { data } = await sb.auth.getSession();
+  if (!data.session) return renderAuth();
+  USER = data.session.user;
+  if (!LS.get("owner", false)) {
+    const { data: own, error } = await sb.rpc("en_is_owner");
+    if (error) { if (DB.cards.length) return startApp(); return renderAuth("Нет связи с сервером. Проверьте интернет."); }
+    if (!own) return renderClaim();
+    LS.set("owner", true);
+  }
+  startApp();
+}
+function renderAuth(msg = "", mode = "in") {
+  $("#tabbar").classList.add("hidden");
+  $("#main").innerHTML = `
+    <div class="auth">
+      <h1>English</h1>
+      <p class="muted">Личный тренажер: слова и ошибки с уроков, повторение по расписанию, календарь занятий.</p>
+      <div class="panel stack">
+        <div class="field"><label class="lbl" for="em">Почта</label><input type="email" id="em" autocomplete="email" inputmode="email"></div>
+        <div class="field"><label class="lbl" for="pw">Пароль</label><input type="password" id="pw" autocomplete="${mode === "in" ? "current-password" : "new-password"}"></div>
+        <button class="btn primary big" id="go">${mode === "in" ? "Войти" : "Создать аккаунт"}</button>
+        <div class="err" id="err">${esc(msg)}</div>
+        <button class="linkbtn" id="sw">${mode === "in" ? "Первый вход? Создать аккаунт" : "Уже есть аккаунт? Войти"}</button>
+      </div>
+    </div>`;
+  $("#sw").onclick = () => renderAuth("", mode === "in" ? "up" : "in");
+  const go = async () => {
+    const email = $("#em").value.trim(), password = $("#pw").value;
+    if (!email || !password) { $("#err").textContent = "Введите почту и пароль."; return; }
+    if (mode === "up" && password.length < 8) { $("#err").textContent = "Пароль должен быть не короче 8 символов."; return; }
+    $("#go").disabled = true; $("#err").textContent = "";
+    const res = mode === "in" ? await sb.auth.signInWithPassword({ email, password }) : await sb.auth.signUp({ email, password });
+    $("#go").disabled = false;
+    if (res.error) {
+      const m = res.error.message || "";
+      $("#err").textContent = /Invalid login/i.test(m) ? "Неверная почта или пароль." : /not confirmed/i.test(m) ? "Почта еще не подтверждена: откройте письмо от Supabase и нажмите ссылку." : /registered/i.test(m) ? "Такой аккаунт уже есть, войдите." : m;
+      return;
+    }
+    if (mode === "up" && !res.data.session) { renderAuth("Письмо для подтверждения отправлено. Подтвердите почту и войдите.", "in"); return; }
+    boot();
+  };
+  $("#go").onclick = go;
+  $("#pw").onkeydown = e => { if (e.key === "Enter") go(); };
+}
+function renderClaim() {
+  $("#tabbar").classList.add("hidden");
+  $("#main").innerHTML = `
+    <div class="auth">
+      <h1>Привязка аккаунта</h1>
+      <p class="muted">Приложение открывается только владельцу. Введите код привязки, который прислал Claude. Код срабатывает один раз.</p>
+      <div class="panel stack">
+        <div class="field"><label class="lbl" for="code">Код привязки</label><input type="text" id="code" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
+        <button class="btn primary big" id="go">Привязать</button>
+        <div class="err" id="err"></div>
+        <button class="linkbtn" id="out">Выйти из аккаунта</button>
+      </div>
+    </div>`;
+  $("#out").onclick = async () => { await sb.auth.signOut(); renderAuth(); };
+  $("#go").onclick = async () => {
+    const { data, error } = await sb.rpc("en_claim", { code: $("#code").value.trim().toUpperCase() });
+    if (error || !data) { $("#err").textContent = "Код не подошел."; return; }
+    LS.set("owner", true); startApp();
+  };
+}
+
+/* ================= ROUTER ================= */
+let VIEW = "today", PARAM = null;
+function startApp() {
+  $("#tabbar").classList.remove("hidden");
+  if (!location.hash) location.replace("#today");
+  route(); sync(); setInterval(() => { if (document.visibilityState === "visible") sync(); }, 5 * 60e3);
+}
+function route() {
+  const h = (location.hash || "#today").slice(1);
+  if (h === "add") { location.replace("#words"); setTimeout(() => openCardSheet(null), 50); return; }
+  const [v, p] = h.split(/-(.+)/);
+  VIEW = ["today", "review", "lessons", "lesson", "words", "calendar", "settings"].includes(v) ? v : "today";
+  PARAM = p || null;
+  if (VIEW === "review" && (!SES || !SES.queue.length)) startSession();
+  render();
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", () => { if (USER) route(); });
+function render() {
+  if (!USER) return;
+  document.querySelectorAll("nav.tabbar a").forEach(a => a.classList.toggle("on", a.dataset.v === VIEW || (VIEW === "lesson" && a.dataset.v === "lessons") || (VIEW === "settings" && a.dataset.v === "today")));
+  const views = { today: renderToday, review: renderReview, lessons: renderLessons, lesson: renderLesson, words: renderWords, calendar: renderCalendar, settings: renderSettings };
+  views[VIEW]();
+  setSyncUI(); updateBadge();
+}
+function updateBadge() { const n = dueCards().length + newCards().length; const b = $("#dueBadge"); if (!b) return; b.textContent = n > 99 ? "99+" : n; b.classList.toggle("hidden", !n); }
+const topbar = (title, right = "") => `<div class="topbar"><div><h1>${title}</h1><button class="sync" id="syncBtn" onclick="sync({force:true})"><i></i></button></div>${right}</div>`;
+
+/* ================= TODAY ================= */
+let deferredInstall = null;
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferredInstall = e; if (VIEW === "today") render(); });
+function renderToday() {
+  const due = dueCards().length, nw = newCards().length;
+  const m = statsMap(), today = new Date(), tk = dayKey(today);
+  const done = activity(m[tk]); const goal = SET.goal; const pct = Math.min(1, done / goal);
+  const { cur } = streakInfo();
+  const R = 28, C = 2 * Math.PI * R;
+  const week = [];
+  for (let i = 6; i >= 0; i--) { const d = addDays(startOfDay(today), -i); week.push({ d, on: activity(m[dayKey(d)]) > 0, today: i === 0 }); }
+  const lesson = DB.lessons[0];
+  const standalone = matchMedia("(display-mode: standalone)").matches;
+  $("#main").innerHTML = `
+    ${topbar(`${fmtDate(today)}`, `<button class="iconbtn" aria-label="Настройки" onclick="location.hash='#settings'">⚙</button>`)}
+    <div class="stack">
+      <div class="panel hero">
+        <div class="eyebrow">План на сегодня</div>
+        <div class="nums">
+          <div><div class="n">${due}</div><div class="l">${plural(due, "карточка", "карточки", "карточек")} к повторению</div></div>
+          <div><div class="n">${nw}</div><div class="l">${plural(nw, "новая", "новые", "новых")}</div></div>
+        </div>
+        <button class="btn primary big" ${due + nw ? "" : "disabled"} onclick="startSession(true)">${due + nw ? "Начать повторение" : "На сегодня все повторено"}</button>
+      </div>
+      <div class="panel streak">
+        <svg class="ring" viewBox="0 0 64 64" aria-hidden="true"><circle class="bg" cx="32" cy="32" r="${R}"/><circle class="fg" cx="32" cy="32" r="${R}" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pct)}" transform="rotate(-90 32 32)"/></svg>
+        <div>
+          <div style="font-weight:700;font-size:17px">${cur ? `Серия ${cur} ${plural(cur, "день", "дня", "дней")}` : "Серия начнется сегодня"}</div>
+          <div class="muted" style="font-size:14px">Сегодня ${done} из ${goal} ${plural(goal, "действия", "действий", "действий")}: повторения и упражнения</div>
+        </div>
+        <div class="week" style="grid-column:1 / -1">${week.map(w => `<div>${WD[(w.d.getDay() + 6) % 7]}<b class="${w.on ? "on" : ""} ${w.today ? "today" : ""}">${w.d.getDate()}</b></div>`).join("")}</div>
+      </div>
+      ${lesson ? `<a class="panel lessoncard" href="#lesson-${lesson.id}">
+          <div class="eyebrow">Последний урок</div>
+          <div class="t">${esc(lesson.title)}</div>
+          <div class="muted" style="font-size:14px">${fmtDate(new Date(lesson.lesson_date + "T12:00:00"))}${lesson.teacher ? " · " + esc(lesson.teacher) : ""} · ${lessonProgressText(lesson)}</div>
+        </a>` : `<div class="panel muted">Уроков пока нет. После занятия напишите Claude «разбери урок», и он появится здесь.</div>`}
+      <div class="row">
+        <button class="btn" style="flex:1" onclick="openCardSheet(null)">＋ Добавить слово</button>
+        <button class="btn" style="flex:1" onclick="location.hash='#calendar'">Календарь</button>
+      </div>
+      ${!standalone && deferredInstall ? `<button class="btn big" id="inst">Установить приложение на телефон</button>` : ""}
+      ${!standalone && !deferredInstall ? `<p class="muted" style="font-size:13px">Чтобы приложение было на главном экране: меню Chrome ⋮ → «Установить приложение» или «Добавить на главный экран».</p>` : ""}
+    </div>`;
+  const inst = $("#inst"); if (inst) inst.onclick = async () => { deferredInstall.prompt(); await deferredInstall.userChoice; deferredInstall = null; render(); };
+}
+function lessonProgressText(l) {
+  const ex = l.exercises || {}; const st = lessonAttemptState(l.id);
+  let total = 0, ok = 0;
+  ["fix", "choice", "order", "translate"].forEach(s => { const n = (ex[s] || []).length; total += n; for (let i = 0; i < n; i++) if (st[s][i] === true) ok++; });
+  return total ? `упражнения ${ok}/${total}` : "без упражнений";
+}
+
+/* ================= REVIEW ================= */
+let SES = null;
+function startSession(navigate) {
+  const due = dueCards(), nw = newCards();
+  const q = []; let ni = 0;
+  due.forEach((c, i) => { q.push(c.id); if ((i + 1) % 4 === 0 && ni < nw.length) q.push(nw[ni++].id); });
+  while (ni < nw.length) q.push(nw[ni++].id);
+  SES = { queue: q, total: q.length, done: 0, shown: false, flip: {}, counts: { 1: 0, 2: 0, 3: 0, 4: 0 }, finished: !q.length };
+  if (navigate) { if (location.hash === "#review") render(); else location.hash = "#review"; }
+}
+const cardById = id => DB.cards.find(c => c.id === id);
+function renderReview() {
+  if (!SES) startSession();
+  while (SES.queue.length && !cardById(SES.queue[0])) SES.queue.shift();
+  if (!SES.queue.length) {
+    SES.finished = true;
+    const s = SES.counts, total = s[1] + s[2] + s[3] + s[4];
+    $("#main").innerHTML = `${topbar("Повторение")}
+      <div class="panel done">
+        <div class="big">${total ? "Готово" : "Пусто"}</div>
+        <div class="muted">${total ? `Повторено ${total} ${plural(total, "карточка", "карточки", "карточек")}. Снова: ${s[1]}, трудно: ${s[2]}, хорошо: ${s[3]}, легко: ${s[4]}.` : "На сегодня карточек к повторению нет. Можно добавить новые слова или пройти упражнения урока."}</div>
+        <div class="row" style="justify-content:center">
+          <button class="btn" onclick="location.hash='#today'">На главную</button>
+          ${DB.lessons[0] ? `<button class="btn primary" onclick="location.hash='#lesson-${DB.lessons[0].id}'">Упражнения урока</button>` : ""}
+        </div>
+      </div>`;
+    queueSync(200);
+    return;
+  }
+  const c = cardById(SES.queue[0]);
+  if (!(c.id in SES.flip)) SES.flip[c.id] = c.kind !== "fix" && (SET.dir === "ru-en" || (SET.dir === "mix" && Math.random() < 0.5));
+  const flip = SES.flip[c.id];
+  const pctDone = SES.total ? SES.done / (SES.done + SES.queue.length) : 0;
+  const kindChip = c.kind === "fix" ? `<span class="chip pen kind">Ошибка с урока</span>` : c.state === 0 ? `<span class="chip kind">Новое</span>` : c.state === 2 ? "" : `<span class="chip grey kind">Изучается</span>`;
+  let front, back;
+  if (c.kind === "fix") {
+    front = `<div class="q">Как сказать правильно?</div><div class="wrong">${esc(c.front)}</div>`;
+    back = `<div class="ans">${hl(c.back)}</div>${c.note ? `<div class="note">${hl(c.note)}</div>` : ""}`;
+  } else if (!flip) {
+    front = `<div class="term">${esc(c.front)}</div>${c.ipa ? `<div class="ipa">${esc(c.ipa)}</div>` : ""}`;
+    back = `<div class="ans">${esc(c.back)}</div>${c.example ? `<div class="ex">${esc(c.example)}</div>` : ""}${c.note ? `<div class="note">${hl(c.note)}</div>` : ""}`;
+  } else {
+    front = `<div class="q">Как это по-английски?</div><div class="term">${esc(c.back)}</div>`;
+    back = `<div class="ans">${esc(c.front)}</div>${c.ipa ? `<div class="ipa">${esc(c.ipa)}</div>` : ""}${c.example ? `<div class="ex">${esc(c.example)}</div>` : ""}${c.note ? `<div class="note">${hl(c.note)}</div>` : ""}`;
+  }
+  const sayText = c.kind === "fix" ? strip(c.back) : c.front;
+  const showSay = SES.shown || (!flip && c.kind !== "fix");
+  const now = new Date();
+  const prev = [1, 2, 3, 4].map(r => fmtIv(schedule(c, r, now).due, now));
+  $("#main").innerHTML = `
+    ${topbar("Повторение", `<span class="mono muted">${SES.done} / ${SES.done + SES.queue.length}</span>`)}
+    <div class="stack">
+      <div class="progress"><i style="width:${pctDone * 100}%"></i></div>
+      <div class="flash" id="flash">
+        ${kindChip}
+        ${showSay ? `<button class="say" id="say">▶ Слушать</button>` : ""}
+        ${front}
+        ${SES.shown ? `<hr>${back}` : ""}
+      </div>
+      ${SES.shown
+        ? `<div class="rates">
+            <button class="r1" onclick="rate(1)">Снова<small>${prev[0]}</small></button>
+            <button class="r2" onclick="rate(2)">Трудно<small>${prev[1]}</small></button>
+            <button class="r3" onclick="rate(3)">Хорошо<small>${prev[2]}</small></button>
+            <button class="r4" onclick="rate(4)">Легко<small>${prev[3]}</small></button>
+          </div>`
+        : `<button class="btn primary big" id="showBtn">Показать ответ</button>`}
+      <div class="row muted" style="font-size:13px"><span>${c.source === "lesson" ? "С урока" : c.source === "anki" ? "Из Anki" : "Добавлено вручную"}</span><span class="spacer"></span><button class="linkbtn" onclick="openCardSheet('${c.id}')">Изменить</button></div>
+    </div>`;
+  setSyncUI();
+  const sb_ = $("#say"); if (sb_) sb_.onclick = () => speak(sayText);
+  const show = $("#showBtn"); if (show) show.onclick = () => { SES.shown = true; renderReview(); };
+}
+function rate(r) {
+  const c = cardById(SES.queue[0]); if (!c) return;
+  const now = new Date();
+  const before = { state: c.state, interval: c.interval_days };
+  const n = schedule(c, r, now);
+  Object.assign(c, n);
+  const id = uuid();
+  DB.outbox.push({ t: "review", id, card_id: c.id,
+    fields: { state: c.state, step: c.step, ease: c.ease, interval_days: c.interval_days, due: c.due, reps: c.reps, lapses: c.lapses, last_review: c.last_review },
+    review: { card_id: c.id, rating: r, reviewed_at: now.toISOString(), state_before: before.state, interval_before: before.interval, interval_after: c.interval_days, ease_after: c.ease, client_id: id } });
+  persist("cards", "outbox");
+  SES.queue.shift(); SES.done++; SES.counts[r]++; SES.shown = false;
+  if (new Date(c.due) - now < 20 * MIN) SES.queue.splice(Math.min(SES.queue.length, 3), 0, c.id);
+  renderReview(); updateBadge(); queueSync(4000);
+}
+document.addEventListener("keydown", e => {
+  if (VIEW !== "review" || !SES || !SES.queue.length || e.target.closest("input,textarea,select") || $("#sheetRoot").children.length) return;
+  if (!SES.shown && (e.key === " " || e.key === "Enter")) { e.preventDefault(); SES.shown = true; renderReview(); }
+  else if (SES.shown && ["1", "2", "3", "4"].includes(e.key)) rate(+e.key);
+});
+
+/* ================= LESSONS ================= */
+function renderLessons() {
+  $("#main").innerHTML = `${topbar("Уроки")}
+    ${DB.lessons.length ? `<div class="list">${DB.lessons.map(l => {
+      const nCards = DB.cards.filter(c => c.lesson_id === l.id).length;
+      return `<a class="item" href="#lesson-${l.id}" style="text-decoration:none;color:inherit">
+        <span class="f">${esc(l.title)}</span>
+        <span class="b">${fmtDate(new Date(l.lesson_date + "T12:00:00"))}${l.teacher ? " · " + esc(l.teacher) : ""} · ${nCards} ${plural(nCards, "карточка", "карточки", "карточек")} · ${lessonProgressText(l)}</span>
+        <span class="s muted">›</span></a>`; }).join("")}</div>`
+      : `<div class="panel muted">Уроков пока нет. После занятия напишите Claude «разбери урок»: он заберет запись из Plaud, сделает разбор и добавит его сюда.</div>`}`;
+}
+let LESS = { sec: "fix", pos: { fix: 0, choice: 0, order: 0, translate: 0 }, order: null };
+function renderLesson() {
+  const l = DB.lessons.find(x => x.id === PARAM);
+  if (!l) { $("#main").innerHTML = `${topbar("Урок")}<div class="panel muted">Урок не найден. Возможно, данные еще синхронизируются.</div>`; return; }
+  if (LESS.id !== l.id) LESS = { id: l.id, sec: null, pos: { fix: 0, choice: 0, order: 0, translate: 0 }, order: null };
+  const ex = l.exercises || {}; const st = lessonAttemptState(l.id);
+  const secs = [["fix", "Ошибки"], ["choice", "Выбор формы"], ["order", "Порядок слов"], ["translate", "Перевод"]].filter(([k]) => (ex[k] || []).length);
+  if (!LESS.sec && secs.length) LESS.sec = secs[0][0];
+  const cnt = k => `${Object.values(st[k]).filter(v => v === true).length}/${(ex[k] || []).length}`;
+  const nCards = DB.cards.filter(c => c.lesson_id === l.id).length;
+  $("#main").innerHTML = `
+    <div class="topbar"><div><button class="linkbtn" onclick="location.hash='#lessons'">← Уроки</button><h1 style="margin-top:6px">${esc(l.title)}</h1>
+      <div class="muted" style="font-size:14px">${fmtDate(new Date(l.lesson_date + "T12:00:00"))}${l.teacher ? " · " + esc(l.teacher) : ""}${l.duration_min ? " · " + l.duration_min + " мин" : ""}</div>
+      <button class="sync" id="syncBtn" onclick="sync({force:true})"><i></i></button></div></div>
+    <div class="stack">
+      ${(l.topics || []).length ? `<div class="row">${l.topics.map(t => `<span class="chip grey">${esc(t)}</span>`).join("")}</div>` : ""}
+      ${l.summary ? `<p style="margin:0">${esc(l.summary)}</p>` : ""}
+      <div class="panel row"><span>${nCards} ${plural(nCards, "карточка", "карточки", "карточек")} с этого урока уже в повторении</span><span class="spacer"></span><button class="btn" onclick="location.hash='#words';WFILTER='lesson:${l.id}'">Посмотреть</button></div>
+      ${(l.focus || []).length ? `<h2>Фокус на следующее занятие</h2><div class="focus">${l.focus.map(f => `<div><strong>${esc(f.title)}</strong>${f.detail ? `<br><span class="muted" style="font-size:14px">${esc(f.detail)}</span>` : ""}${f.example ? `<br><em>${esc(f.example)}</em>` : ""}</div>`).join("")}</div>` : ""}
+      ${secs.length ? `<h2>Упражнения</h2>
+        <div class="segs" role="tablist">${secs.map(([k, n]) => `<button role="tab" aria-selected="${LESS.sec === k}" onclick="LESS.sec='${k}';renderLesson()">${n}<b>${cnt(k)}</b></button>`).join("")}</div>
+        <div class="panel" id="expanel"></div>` : ""}
+      ${(l.good || []).length ? `<h2>Что получилось хорошо</h2><div class="focus good">${l.good.map(g => `<div>${g.t ? `<span class="mono muted">${esc(g.t)}</span> ` : ""}<strong>${esc(g.quote)}</strong>${g.why ? `<br><span class="muted" style="font-size:14px">${esc(g.why)}</span>` : ""}</div>`).join("")}</div>` : ""}
+    </div>`;
+  if (secs.length) renderExercise(l);
+}
+function recordAttempt(l, section, item, correct) {
+  const id = uuid();
+  DB.outbox.push({ t: "attempt", row: { lesson_id: l.id, section, item, correct, at: new Date().toISOString(), client_id: id } });
+  persist("outbox"); queueSync(3000);
+}
+function exDots(panel, n, cur, state, onPick) {
+  const d = document.createElement("div"); d.className = "dots";
+  for (let i = 0; i < n; i++) {
+    const b = document.createElement("button"); b.textContent = i + 1; b.setAttribute("aria-label", "Задание " + (i + 1));
+    if (state[i] === true) b.classList.add("ok"); else if (state[i] === false) b.classList.add("bad");
+    if (i === cur) b.classList.add("cur"); b.onclick = () => onPick(i); d.appendChild(b);
+  }
+  panel.appendChild(d);
+}
+function renderExercise(l) {
+  const sec = LESS.sec, data = l.exercises[sec] || [], panel = $("#expanel");
+  if (!panel || !data.length) return;
+  let p = LESS.pos[sec] % data.length; LESS.pos[sec] = p;
+  const it = data[p], state = lessonAttemptState(l.id)[sec];
+  const go = i => { LESS.pos[sec] = (i + data.length) % data.length; LESS.order = null; renderExercise(l); };
+  const nav = `<div class="row" style="margin-top:12px"><span class="spacer"></span><button class="btn ghost" id="xprev">←</button><button class="btn" id="xnext">Дальше →</button></div>`;
+  const chip = u => u ? `<div><span class="chip">Murphy · ${esc(u)}</span></div>` : "";
+  if (sec === "fix" || sec === "translate") {
+    const prompt = sec === "fix"
+      ? `<div class="said"><div class="row muted" style="font-size:12px">${it.t ? `<span class="mono">${esc(it.t)}</span>` : ""}${it.type ? `<span class="chip pen">${esc(it.type)}</span>` : ""}</div><q>${esc(it.q)}</q></div>`
+      : `<div class="sent">${esc(it.ru)}</div>`;
+    const model = sec === "fix" ? it.show : it.model, rule = sec === "fix" ? it.rule : it.note;
+    panel.innerHTML = `<div class="muted" style="font-size:13px;margin-bottom:8px">Задание ${p + 1} из ${data.length}</div>${prompt}
+      <label class="lbl" for="xin">Ваш вариант по-английски</label>
+      <input type="text" id="xin" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div class="row" style="margin-top:10px"><button class="btn primary" id="xchk">Проверить</button><button class="btn ghost" id="xshow">Показать ответ</button></div>
+      <div id="xfb"></div>${nav}`;
+    const inp = $("#xin");
+    const fb = (ok, given, manual) => {
+      const alts = (it.a || []).slice(1, 4).map(esc).join(" · ");
+      $("#xfb").innerHTML = `<div class="fb ${ok ? "ok" : "bad"}"><div class="v">${ok ? (manual ? "Засчитано" : "Верно") : "Пока не совпадает"}</div>
+        <div class="r">${hl(model)}</div>${rule ? `<div>${esc(rule)}</div>` : ""}${chip(it.u)}
+        ${alts ? `<div class="muted" style="font-size:13px">Тоже подходит: ${alts}</div>` : ""}
+        <div class="row"><button class="linkbtn" id="xsay">▶ Послушать</button>${!ok && given ? `<span class="spacer"></span><button class="linkbtn" id="xovr">Мой вариант тоже верный</button>` : ""}</div></div>`;
+      $("#xsay").onclick = () => speak(strip(model));
+      const o = $("#xovr"); if (o) o.onclick = () => { recordAttempt(l, sec, p, true); fb(true, given, true); redots(); };
+    };
+    const redots = () => { const o = panel.querySelector(".dots"); if (o) o.remove(); exDots(panel, data.length, p, lessonAttemptState(l.id)[sec], go); };
+    $("#xchk").onclick = () => { const v = inp.value.trim(); if (!v) { inp.focus(); return; } const ok = (it.a || []).some(a => norm(a) === norm(v)); recordAttempt(l, sec, p, ok); fb(ok, v, false); redots(); };
+    $("#xshow").onclick = () => { if (state[p] === undefined) recordAttempt(l, sec, p, false); fb(false, "", false); redots(); };
+    inp.onkeydown = e => { if (e.key === "Enter") $("#xchk").click(); };
+    redots();
+  } else if (sec === "choice") {
+    panel.innerHTML = `<div class="muted" style="font-size:13px;margin-bottom:8px">Задание ${p + 1} из ${data.length}</div>
+      <div class="sent">${esc(it.s).replace("___", `<span class="gap" id="gap">&nbsp;</span>`)}</div>
+      <div class="opts">${it.o.map((o, i) => `<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><div id="xfb"></div>${nav}`;
+    panel.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+      const sel = +b.dataset.i, ok = sel === it.a; recordAttempt(l, sec, p, ok);
+      panel.querySelectorAll(".opt").forEach(x => { const i = +x.dataset.i; x.disabled = true; if (i === it.a) x.classList.add("ok"); else if (i === sel) x.classList.add("bad"); });
+      $("#gap").textContent = it.o[it.a];
+      $("#xfb").innerHTML = `<div class="fb ${ok ? "ok" : "bad"}"><div class="v">${ok ? "Верно" : "Правильно: " + esc(it.o[it.a])}</div><div>${esc(it.why || "")}</div>${chip(it.u)}</div>`;
+      const o = panel.querySelector(".dots"); if (o) o.remove(); exDots(panel, data.length, p, lessonAttemptState(l.id)[sec], go);
+    });
+    exDots(panel, data.length, p, state, go);
+  } else if (sec === "order") {
+    const words = it.en.split(" ");
+    if (!LESS.order || LESS.order.p !== p) LESS.order = { p, pool: shuffle(words.map(w => w)), built: [] };
+    const O = LESS.order;
+    panel.innerHTML = `<div class="muted" style="font-size:13px;margin-bottom:8px">Задание ${p + 1} из ${data.length}</div>
+      <div class="muted" style="margin-bottom:10px">${esc(it.ru)}</div><div class="build" id="ob"></div><div class="pool" id="op"></div>
+      <div class="row"><button class="btn primary" id="ochk">Проверить</button><button class="btn ghost" id="ores">Сбросить</button></div><div id="xfb"></div>${nav}`;
+    O.built.forEach((k, idx) => { const t = document.createElement("button"); t.className = "tile"; t.textContent = O.pool[k]; t.onclick = () => { O.built.splice(idx, 1); renderExercise(l); }; $("#ob").appendChild(t); });
+    O.pool.forEach((w, k) => { const t = document.createElement("button"); t.className = "tile" + (O.built.includes(k) ? " used" : ""); t.textContent = w; t.onclick = () => { O.built.push(k); renderExercise(l); }; $("#op").appendChild(t); });
+    $("#ores").onclick = () => { O.built = []; renderExercise(l); };
+    $("#ochk").onclick = () => {
+      if (O.built.length < words.length) { $("#xfb").innerHTML = `<div class="fb bad"><div>Использованы не все слова: ${O.built.length} из ${words.length}.</div></div>`; return; }
+      const ok = norm(O.built.map(k => O.pool[k]).join(" ")) === norm(it.en); recordAttempt(l, sec, p, ok);
+      $("#ob").classList.add(ok ? "ok" : "bad");
+      $("#xfb").innerHTML = `<div class="fb ${ok ? "ok" : "bad"}"><div class="v">${ok ? "Верно" : "Порядок другой"}</div>${ok ? "" : `<div class="r">${esc(it.en)}</div>`}<div><button class="linkbtn" id="xsay">▶ Послушать</button></div></div>`;
+      $("#xsay").onclick = () => speak(it.en);
+      const o = panel.querySelector(".dots"); if (o) o.remove(); exDots(panel, data.length, p, lessonAttemptState(l.id)[sec], go);
+    };
+    exDots(panel, data.length, p, state, go);
+  }
+  $("#xprev").onclick = () => go(p - 1);
+  $("#xnext").onclick = () => go(p + 1);
+}
+
+/* ================= WORDS ================= */
+let WFILTER = "all", WQUERY = "", WLIMIT = 150;
+function cardStatus(c) {
+  if (c.suspended) return `<span class="chip grey">отложено</span>`;
+  if (c.state === 0) return `<span class="chip">новое</span>`;
+  if (c.state === 1 || c.state === 3) return `<span class="chip pen">учу</span>`;
+  const days = Math.round((new Date(c.due) - startOfDay(new Date())) / DAY);
+  return days <= 0 ? `<span class="chip ok">сегодня</span>` : `<span class="chip grey">через ${days} д</span>`;
+}
+function renderWords() {
+  const filters = [["all", "Все"], ["word", "Слова"], ["phrase", "Фразы"], ["fix", "Ошибки"], ["learning", "Учу"], ["manual", "Мои"], ["anki", "Anki"], ["suspended", "Отложенные"]];
+  let list = DB.cards.slice();
+  if (WFILTER.startsWith("lesson:")) list = list.filter(c => c.lesson_id === WFILTER.slice(7));
+  else if (["word", "phrase", "fix"].includes(WFILTER)) list = list.filter(c => c.kind === WFILTER && !c.suspended);
+  else if (WFILTER === "learning") list = list.filter(c => (c.state === 1 || c.state === 3) && !c.suspended);
+  else if (WFILTER === "manual" || WFILTER === "anki") list = list.filter(c => c.source === WFILTER);
+  else if (WFILTER === "suspended") list = list.filter(c => c.suspended);
+  const q = WQUERY.trim().toLowerCase();
+  if (q) list = list.filter(c => (c.front + " " + c.back + " " + (c.example || "")).toLowerCase().includes(q));
+  list.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const lessonName = WFILTER.startsWith("lesson:") ? (DB.lessons.find(l => l.id === WFILTER.slice(7)) || {}).title : null;
+  $("#main").innerHTML = `${topbar("Слова", `<span class="mono muted">${DB.cards.length}</span>`)}
+    <div class="stack">
+      <input type="search" id="wq" placeholder="Поиск по словам и переводу" value="${esc(WQUERY)}" aria-label="Поиск">
+      <div class="filters">${lessonName ? `<button aria-pressed="true" data-f="all">✕ ${esc(lessonName)}</button>` : filters.map(([k, n]) => `<button data-f="${k}" aria-pressed="${WFILTER === k}">${n}</button>`).join("")}</div>
+      <div class="muted" style="font-size:13px">${list.length} ${plural(list.length, "карточка", "карточки", "карточек")}</div>
+      <div class="list">${list.slice(0, WLIMIT).map(c => `<button class="item" data-id="${c.id}">
+        <span class="f">${c.kind === "fix" ? `<span style="color:var(--pen);text-decoration:line-through;font-weight:500">${esc(c.front)}</span>` : esc(c.front)}</span>
+        <span class="b">${c.kind === "fix" ? hl(c.back) : esc(c.back)}</span>
+        <span class="s">${cardStatus(c)}</span></button>`).join("")}</div>
+      ${list.length > WLIMIT ? `<button class="btn" id="more">Показать еще</button>` : ""}
+    </div>
+    <button class="fab" aria-label="Добавить слово" onclick="openCardSheet(null)">＋</button>`;
+  const wq = $("#wq");
+  wq.oninput = () => { WQUERY = wq.value; WLIMIT = 150; const pos = wq.selectionStart; renderWords(); const n = $("#wq"); n.focus(); n.setSelectionRange(pos, pos); };
+  document.querySelectorAll(".filters button").forEach(b => b.onclick = () => { WFILTER = b.dataset.f; WLIMIT = 150; renderWords(); });
+  document.querySelectorAll(".item[data-id]").forEach(b => b.onclick = () => openCardSheet(b.dataset.id));
+  const more = $("#more"); if (more) more.onclick = () => { WLIMIT += 300; renderWords(); };
+}
+
+/* ================= CARD SHEET (add / edit) ================= */
+function closeSheet() { $("#sheetRoot").innerHTML = ""; }
+function openCardSheet(id) {
+  const c = id ? cardById(id) : null;
+  const isFix = c && c.kind === "fix";
+  $("#sheetRoot").innerHTML = `<div class="sheet-bg" id="sbg"><div class="sheet" role="dialog" aria-modal="true" aria-label="${c ? "Карточка" : "Новое слово"}">
+    <div class="grab"></div>
+    <div class="row"><h2>${c ? "Карточка" : "Новое слово"}</h2><span class="spacer"></span><button class="iconbtn" aria-label="Закрыть" id="sx">✕</button></div>
+    ${c ? `<div class="row">${cardStatus(c)}<span class="muted" style="font-size:13px">${c.reps || 0} ${plural(c.reps || 0, "повторение", "повторения", "повторений")}${c.lapses ? `, забыто ${c.lapses}` : ""}${c.state === 2 ? ` · интервал ${Math.round(c.interval_days)} д` : ""}</span></div>` : ""}
+    <div class="field"><label class="lbl" for="cf">${isFix ? "Как было сказано" : "Слово или фраза по-английски"}</label>
+      <div class="row" style="flex-wrap:nowrap"><input type="text" id="cf" value="${esc(c ? c.front : "")}" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="например, take your time">
+      ${isFix ? "" : `<button class="btn" id="ai" style="white-space:nowrap">✨ AI</button>`}</div></div>
+    <div class="muted" id="aimsg" style="font-size:13px">${c ? "" : "Можно ввести слово по-русски или по-английски и нажать AI: перевод, транскрипция, пример и заметка заполнятся сами."}</div>
+    <div class="field"><label class="lbl" for="cb">${isFix ? "Как правильно" : "Перевод"}</label><input type="text" id="cb" value="${esc(c ? c.back : "")}"></div>
+    ${isFix ? "" : `<div class="field"><label class="lbl" for="ci">Транскрипция</label><input type="text" id="ci" value="${esc(c ? c.ipa || "" : "")}"></div>
+    <div class="field"><label class="lbl" for="ce">Пример</label><textarea id="ce">${esc(c ? c.example || "" : "")}</textarea></div>`}
+    <div class="field"><label class="lbl" for="cn">${isFix ? "Правило" : "Заметка"}</label><textarea id="cn">${esc(c ? c.note || "" : "")}</textarea></div>
+    ${isFix ? "" : `<div class="field"><label class="lbl" for="ck">Тип</label><select id="ck"><option value="word">Слово</option><option value="phrase">Фраза</option></select></div>`}
+    <button class="btn primary big" id="csave">Сохранить</button>
+    ${c ? `<div class="row"><button class="btn" id="csay">▶ Слушать</button><button class="btn" id="csusp">${c.suspended ? "Вернуть в повторение" : "Отложить"}</button><button class="btn" id="creset">Учить заново</button><span class="spacer"></span><button class="btn danger" id="cdel">Удалить</button></div><div id="cconfirm"></div>` : ""}
+  </div></div>`;
+  const kindSel = $("#ck"); if (kindSel) kindSel.value = c ? (c.kind === "fix" ? "phrase" : c.kind) : "word";
+  $("#sbg").onclick = e => { if (e.target.id === "sbg") closeSheet(); };
+  $("#sx").onclick = closeSheet;
+  if (!c) setTimeout(() => $("#cf").focus(), 50);
+  const ai = $("#ai");
+  if (ai) ai.onclick = async () => {
+    const text = $("#cf").value.trim(); if (!text) { $("#cf").focus(); return; }
+    if (!navigator.onLine) { $("#aimsg").textContent = "Нет сети: AI-заполнение недоступно, но карточку можно сохранить вручную."; return; }
+    ai.disabled = true; $("#aimsg").textContent = "Haiku заполняет карточку…";
+    try {
+      const { data, error } = await sb.functions.invoke("en-enrich", { body: { text } });
+      if (error) {
+        let detail = ""; try { detail = (await error.context.json()).error; } catch (e) {}
+        $("#aimsg").textContent = detail === "no_api_key" ? "Ключ Anthropic еще не добавлен в Supabase (секрет ANTHROPIC_API_KEY)." : detail === "not_owner" ? "Нет доступа: аккаунт не привязан." : "Не получилось заполнить. Попробуйте еще раз или заполните вручную.";
+      } else {
+        $("#cf").value = data.front || text; $("#cb").value = data.ru || ""; $("#ci").value = data.ipa || ""; $("#ce").value = data.example || ""; $("#cn").value = data.note || "";
+        if (kindSel) kindSel.value = data.kind === "phrase" ? "phrase" : "word";
+        $("#aimsg").textContent = "Заполнено. Проверьте и сохраните.";
+      }
+    } catch (e) { $("#aimsg").textContent = "Не получилось связаться с сервером."; }
+    ai.disabled = false;
+  };
+  $("#csave").onclick = () => {
+    const front = $("#cf").value.trim(), back = $("#cb").value.trim();
+    if (!front || !back) { $("#aimsg").textContent = isFix ? "Заполните обе фразы." : "Нужны слово и перевод."; return; }
+    const fields = { front, back, note: $("#cn").value.trim() || null };
+    if (!isFix) Object.assign(fields, { ipa: $("#ci").value.trim() || null, example: $("#ce").value.trim() || null, kind: kindSel.value });
+    const kind = isFix ? "fix" : fields.kind;
+    const dup = DB.cards.find(x => x.id !== (c && c.id) && x.kind === kind && x.front.toLowerCase() === front.toLowerCase());
+    if (dup) { $("#aimsg").innerHTML = `Такая карточка уже есть: <button class="linkbtn" onclick="openCardSheet('${dup.id}')">открыть</button>`; return; }
+    if (c) {
+      Object.assign(c, fields);
+      DB.outbox.push({ t: "card_update", id: c.id, fields });
+      toast("Сохранено");
+    } else {
+      const row = Object.assign({ id: uuid(), source: "manual", state: 0, step: 0, ease: 2.5, interval_days: 0, due: new Date().toISOString(), reps: 0, lapses: 0, top: false, suspended: false, tags: [], created_at: new Date().toISOString() }, fields);
+      DB.cards.push(row);
+      const { created_at, ...send } = row;
+      DB.outbox.push({ t: "card_insert", row: send });
+      toast("Добавлено в повторение");
+    }
+    persist("cards", "outbox"); closeSheet(); render(); queueSync(500);
+  };
+  if (c) {
+    $("#csay").onclick = () => speak(c.kind === "fix" ? strip(c.back) : c.front);
+    $("#csusp").onclick = () => { c.suspended = !c.suspended; DB.outbox.push({ t: "card_update", id: c.id, fields: { suspended: c.suspended } }); persist("cards", "outbox"); closeSheet(); render(); queueSync(500); };
+    $("#creset").onclick = () => { const f = { state: 0, step: 0, ease: 2.5, interval_days: 0, due: new Date().toISOString(), reps: 0, lapses: 0 }; Object.assign(c, f); DB.outbox.push({ t: "card_update", id: c.id, fields: f }); persist("cards", "outbox"); toast("Карточка снова новая"); closeSheet(); render(); queueSync(500); };
+    $("#cdel").onclick = () => {
+      $("#cconfirm").innerHTML = `<div class="fb bad"><div>Удалить карточку вместе с историей повторений?</div><div class="row"><button class="btn danger" id="cdy">Удалить</button><button class="btn ghost" id="cdn">Отмена</button></div></div>`;
+      $("#cdn").onclick = () => $("#cconfirm").innerHTML = "";
+      $("#cdy").onclick = () => { DB.cards = DB.cards.filter(x => x.id !== c.id); DB.outbox.push({ t: "card_delete", id: c.id }); if (SES) SES.queue = SES.queue.filter(x => x !== c.id); persist("cards", "outbox"); closeSheet(); render(); queueSync(500); };
+    };
+  }
+}
+
+/* ================= CALENDAR ================= */
+let CAL = { y: new Date().getFullYear(), m: new Date().getMonth(), sel: dayKey(new Date()) };
+function forecastMap() {
+  const f = {}; const today = startOfDay(new Date()); const tk = dayKey(today);
+  DB.cards.forEach(c => { if (!live(c) || c.state === 0) return; const d = new Date(c.due); const k = d < today ? tk : dayKey(d); f[k] = (f[k] || 0) + 1; });
+  return f;
+}
+const lvl = n => !n ? "" : n < 10 ? "l1" : n < 30 ? "l2" : n < 60 ? "l3" : "l4";
+function renderCalendar() {
+  const m = statsMap(), f = forecastMap(), today = startOfDay(new Date()), tk = dayKey(today);
+  const { cur, best } = streakInfo();
+  let d30 = 0; for (let i = 0; i < 30; i++) if (activity(m[dayKey(addDays(today, -i))])) d30++;
+  const totalReviews = Object.values(m).reduce((s, x) => s + (x.reviews || 0), 0);
+  // Month grid
+  const first = new Date(CAL.y, CAL.m, 1), lead = (first.getDay() + 6) % 7, days = new Date(CAL.y, CAL.m + 1, 0).getDate();
+  let cells = ""; for (let i = 0; i < lead; i++) cells += `<button class="out" tabindex="-1" aria-hidden="true"></button>`;
+  for (let dd = 1; dd <= days; dd++) {
+    const d = new Date(CAL.y, CAL.m, dd), k = dayKey(d);
+    const fut = d > today, a = activity(m[k]), fc = f[k] || 0;
+    const cls = [fut ? "fut" : lvl(a), k === tk ? "today" : "", k === CAL.sel ? "sel" : ""].join(" ");
+    const c = fut ? (fc || "") : (a || "");
+    cells += `<button class="${cls}" data-k="${k}" aria-label="${fmtDate(d)}"><span class="d">${dd}</span><span class="c">${c}</span></button>`;
+  }
+  // Selected day detail
+  const sd = new Date(CAL.sel + "T12:00:00"), ss = m[CAL.sel], sf = f[CAL.sel] || 0;
+  let detail;
+  if (sd > addDays(today, 1) || (CAL.sel !== tk && sd > today)) detail = sf ? `${fmtDate(sd)}: к повторению ${sf} ${plural(sf, "карточка", "карточки", "карточек")}.` : `${fmtDate(sd)}: повторений не запланировано.`;
+  else if (CAL.sel === tk) detail = `Сегодня: сделано ${ss ? ss.reviews : 0} ${plural(ss ? ss.reviews : 0, "повторение", "повторения", "повторений")} и ${ss ? ss.attempts : 0} ${plural(ss ? ss.attempts : 0, "упражнение", "упражнения", "упражнений")}; осталось ${dueCards().length} к повторению.`;
+  else detail = ss && activity(ss) ? `${fmtDate(sd)}: ${ss.reviews} ${plural(ss.reviews, "повторение", "повторения", "повторений")}${ss.new_cards ? `, из них новых ${ss.new_cards}` : ""}, ${ss.attempts} ${plural(ss.attempts, "упражнение", "упражнения", "упражнений")}.` : `${fmtDate(sd)}: занятий не было.`;
+  // Heatmap: 20 weeks ending this week
+  const weeks = 20; const endW = addDays(today, 6 - ((today.getDay() + 6) % 7)); const startH = addDays(endW, -(weeks * 7) + 1);
+  let heat = ""; for (let i = 0; i < weeks * 7; i++) { const d = addDays(startH, i), k = dayKey(d); heat += d > today ? `<i style="opacity:.25"></i>` : `<i class="${lvl(activity(m[k]))}" title="${fmtDate(d)}: ${activity(m[k])}"></i>`; }
+  // Forecast 14 days
+  const fc = []; for (let i = 0; i < 14; i++) { const d = addDays(today, i); fc.push({ d, n: f[dayKey(d)] || 0 }); }
+  const maxF = Math.max(1, ...fc.map(x => x.n));
+  $("#main").innerHTML = `${topbar("Календарь")}
+    <div class="stack">
+      <div class="stats4">
+        <div class="stat"><div class="n">${cur}</div><div class="t">дней подряд сейчас</div></div>
+        <div class="stat"><div class="n">${best}</div><div class="t">лучшая серия</div></div>
+        <div class="stat"><div class="n">${d30}/30</div><div class="t">дней с занятиями за месяц</div></div>
+        <div class="stat"><div class="n">${totalReviews}</div><div class="t">повторений всего</div></div>
+      </div>
+      <div class="panel month">
+        <div class="head"><button class="iconbtn" id="mp" aria-label="Предыдущий месяц">‹</button><h2>${MONTHS[CAL.m][0].toUpperCase() + MONTHS[CAL.m].slice(1)} ${CAL.y}</h2><button class="iconbtn" id="mn" aria-label="Следующий месяц">›</button></div>
+        <div class="mgrid">${WD.map(w => `<div class="wd">${w}</div>`).join("")}${cells}</div>
+        <p class="muted" style="font-size:13px;margin:10px 0 0">Заливка: сколько было повторений и упражнений. Пунктир с синей цифрой: сколько карточек запланировано на будущий день.</p>
+        <div class="fb" style="background:var(--accent-soft);margin-top:10px">${esc(detail)}</div>
+      </div>
+      <div class="panel">
+        <h2 style="margin-bottom:10px">Регулярность за 20 недель</h2>
+        <div class="heat"><div class="g">${heat}</div></div>
+      </div>
+      <div class="panel">
+        <h2 style="margin-bottom:10px">Прогноз повторений на 2 недели</h2>
+        <div class="bars">${fc.map(x => `<div><span>${x.n || ""}</span><b style="height:${x.n / maxF * 100}%"></b></div>`).join("")}</div>
+        <div class="barlbl">${fc.map((x, i) => `<span>${i === 0 ? "сег" : x.d.getDate()}</span>`).join("")}</div>
+      </div>
+      <div class="panel stack">
+        <h2>Ежедневное напоминание</h2>
+        <p class="muted" style="margin:0;font-size:14px">Файл с повторяющимся событием на 15 минут. Телефон откроет его в календаре, и напоминание будет приходить каждый день.</p>
+        <div class="row"><input type="time" id="rt" value="${esc(LS.get("remindAt", "09:00"))}" style="max-width:140px" aria-label="Время напоминания"><button class="btn primary" id="ics">Добавить в календарь</button></div>
+      </div>
+    </div>`;
+  $("#mp").onclick = () => { CAL.m--; if (CAL.m < 0) { CAL.m = 11; CAL.y--; } renderCalendar(); };
+  $("#mn").onclick = () => { CAL.m++; if (CAL.m > 11) { CAL.m = 0; CAL.y++; } renderCalendar(); };
+  document.querySelectorAll(".mgrid button[data-k]").forEach(b => b.onclick = () => { CAL.sel = b.dataset.k; renderCalendar(); });
+  $("#ics").onclick = () => {
+    const t = $("#rt").value || "09:00"; LS.set("remindAt", t);
+    const [hh, mm] = t.split(":"); const s = addDays(today, 1);
+    const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+/, "");
+    const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//denrogov.com//english//RU", "BEGIN:VEVENT",
+      `UID:english-daily-${Date.now()}@denrogov.com`, `DTSTAMP:${stamp}`,
+      `DTSTART;TZID=${TZ}:${s.getFullYear()}${pad(s.getMonth() + 1)}${pad(s.getDate())}T${hh}${mm}00`,
+      "DURATION:PT15M", "RRULE:FREQ=DAILY", "SUMMARY:English: повторение карточек",
+      `DESCRIPTION:Открыть тренажер: ${location.origin}${location.pathname}`, `URL:${location.origin}${location.pathname}`,
+      "BEGIN:VALARM", "TRIGGER:PT0M", "ACTION:DISPLAY", "DESCRIPTION:English: повторение", "END:VALARM",
+      "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([ics], { type: "text/calendar" })); a.download = "english-reminder.ics";
+    document.body.appendChild(a); a.click(); a.remove(); toast("Откройте файл, чтобы добавить событие");
+  };
+}
+
+/* ================= SETTINGS ================= */
+function renderSettings() {
+  const pend = DB.outbox.length;
+  const opt = (v, cur, n) => `<option value="${v}" ${String(v) === String(cur) ? "selected" : ""}>${n}</option>`;
+  $("#main").innerHTML = `
+    <div class="topbar"><div><button class="linkbtn" onclick="location.hash='#today'">← Сегодня</button><h1 style="margin-top:6px">Настройки</h1><button class="sync" id="syncBtn" onclick="sync({force:true})"><i></i></button></div></div>
+    <div class="stack">
+      <div class="panel stack">
+        <div class="field"><label class="lbl" for="snp">Новых карточек в день</label><select id="snp">${[5, 10, 15, 20, 30].map(v => opt(v, SET.newPerDay, v)).join("")}</select></div>
+        <div class="field"><label class="lbl" for="sg">Цель на день (повторения и упражнения)</label><select id="sg">${[10, 20, 30, 50, 80].map(v => opt(v, SET.goal, v)).join("")}</select></div>
+        <div class="field"><label class="lbl" for="sd">Направление карточек со словами</label><select id="sd">${opt("en-ru", SET.dir, "Английский → русский")}${opt("ru-en", SET.dir, "Русский → английский")}${opt("mix", SET.dir, "Вперемешку")}</select></div>
+        <div class="field"><label class="lbl" for="sr">Скорость озвучки</label><select id="sr">${[[0.7, "Медленно"], [0.9, "Чуть медленнее"], [1, "Обычно"]].map(([v, n]) => opt(v, SET.rate, n)).join("")}</select></div>
+      </div>
+      <div class="panel stack">
+        <div>В словаре ${DB.cards.length} ${plural(DB.cards.length, "карточка", "карточки", "карточек")}, уроков: ${DB.lessons.length}.</div>
+        <div class="muted" style="font-size:14px">${pend ? `${pend} ${plural(pend, "действие ждет", "действия ждут", "действий ждут")} отправки на сервер.` : "Все действия отправлены на сервер."}</div>
+        <div class="row"><button class="btn" onclick="sync({force:true})">Синхронизировать сейчас</button><button class="btn danger" id="lo">Выйти</button></div>
+        <div id="loc"></div>
+      </div>
+      <p class="muted mono">Версия ${VERSION} · ${esc(USER?.email || "")}</p>
+    </div>`;
+  const bind = (id, key, num) => $(id).onchange = e => { SET[key] = num ? +e.target.value : e.target.value; saveSettings(); updateBadge(); toast("Сохранено", 1200); };
+  bind("#snp", "newPerDay", true); bind("#sg", "goal", true); bind("#sd", "dir", false); bind("#sr", "rate", true);
+  $("#lo").onclick = () => {
+    $("#loc").innerHTML = pend ? `<div class="fb bad"><div>Есть неотправленные действия (${pend}). Если выйти сейчас, они пропадут.</div><div class="row"><button class="btn danger" id="loy">Все равно выйти</button><button class="btn ghost" id="lon">Отмена</button></div></div>`
+      : `<div class="fb bad"><div>Выйти из аккаунта на этом устройстве?</div><div class="row"><button class="btn danger" id="loy">Выйти</button><button class="btn ghost" id="lon">Отмена</button></div></div>`;
+    $("#lon").onclick = () => $("#loc").innerHTML = "";
+    $("#loy").onclick = async () => { await sb.auth.signOut(); try { Object.keys(localStorage).filter(k => k.startsWith("en.")).forEach(k => localStorage.removeItem(k)); } catch (e) {} location.reload(); };
+  };
+}
+
+/* ================= START ================= */
+if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+sb.auth.onAuthStateChange((ev, session) => { if (ev === "SIGNED_OUT") { USER = null; } else if (session) USER = session.user; });
+boot();
+</script>
+</body>
+</html>
