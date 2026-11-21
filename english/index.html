@@ -263,7 +263,7 @@ label.lbl{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
 const SB_URL = "https://oxsmllzxalxriiwgwpna.supabase.co";
 const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94c21sbHp4YWx4cmlpd2d3cG5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MjkxMTAsImV4cCI6MjEwMzIwNTExMH0.zvrvQQlcsr7z32GJU_fO_xpysJ15J5frtXCPHkfli6Y";
 const TZ = (Intl.DateTimeFormat().resolvedOptions().timeZone) || "America/Argentina/Buenos_Aires";
-const VERSION = "1.1.0";
+const VERSION = "1.2.0";
 const sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, storageKey: "en-auth" } });
 
 /* ================= HELPERS ================= */
@@ -856,13 +856,14 @@ function cardStatus(c) {
   return days <= 0 ? `<span class="chip ok">сегодня</span>` : `<span class="chip grey">через ${days} д</span>`;
 }
 function renderWords() {
-  const filters = [["all", "Все"], ["word", "Слова"], ["phrase", "Фразы"], ["fix", "Ошибки"], ["learning", "Учу"], ["manual", "Мои"], ["anki", "Anki"], ["suspended", "Отложенные"]];
+  const filters = [["all", "Все"], ["word", "Слова"], ["phrase", "Фразы"], ["fix", "Ошибки"], ["learning", "Учу"], ["manual", "Мои"], ["anki", "Anki"], ["leech", "Трудные"], ["suspended", "Отложенные"]];
   let list = DB.cards.slice();
   if (WFILTER.startsWith("lesson:")) list = list.filter(c => c.lesson_id === WFILTER.slice(7));
   else if (["word", "phrase", "fix"].includes(WFILTER)) list = list.filter(c => c.kind === WFILTER && !c.suspended);
   else if (WFILTER === "learning") list = list.filter(c => (c.state === 1 || c.state === 3) && !c.suspended);
   else if (WFILTER === "manual" || WFILTER === "anki") list = list.filter(c => c.source === WFILTER);
   else if (WFILTER === "suspended") list = list.filter(c => c.suspended);
+  else if (WFILTER === "leech") list = list.filter(c => (c.tags || []).includes("leech") && !c.suspended);
   const q = WQUERY.trim().toLowerCase();
   if (q) list = list.filter(c => (c.front + " " + c.back + " " + (c.example || "")).toLowerCase().includes(q));
   list.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -875,7 +876,7 @@ function renderWords() {
       <div class="list">${list.slice(0, WLIMIT).map(c => `<button class="item" data-id="${c.id}">
         <span class="f">${c.kind === "fix" ? `<span style="color:var(--pen);text-decoration:line-through;font-weight:500">${esc(c.front)}</span>` : esc(c.front)}</span>
         <span class="b">${c.kind === "fix" ? hl(c.back) : esc(c.back)}</span>
-        <span class="s">${cardStatus(c)}</span></button>`).join("")}</div>
+        <span class="s">${cardStatus(c)}${(c.tags || []).includes("leech") ? `<br><span class="chip pen" style="margin-top:4px">трудное</span>` : ""}</span></button>`).join("")}</div>
       ${list.length > WLIMIT ? `<button class="btn" id="more">Показать еще</button>` : ""}
     </div>
     <button class="fab" aria-label="Добавить слово" onclick="openCardSheet(null)">＋</button>`;
